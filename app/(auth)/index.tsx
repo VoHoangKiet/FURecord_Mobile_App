@@ -1,11 +1,10 @@
-import { Form, Input } from "@ant-design/react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "@/context/AuthContext";
+import { Button, Form, Input } from "@ant-design/react-native";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
@@ -13,25 +12,27 @@ import {
 
 export default function SignInScreen() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const { login, loading } = useAuth();
 
-  const handleSignIn = async () => {
-    const emailConfirm = await AsyncStorage.getItem("email");
-    const passwordConfirm = await AsyncStorage.getItem("password");
-    if (email === emailConfirm && password === passwordConfirm) {
-      try {
-        alert("Sign In Successful");
-        await AsyncStorage.setItem("isLogged", "true");
-        router.navigate("/(tabs)");
-      } catch (error) {
-        console.error("Error saving data", error);
-      }
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert("Vui lòng nhập đầy đủ email và mật khẩu");
+      return;
+    }
+    const success = await login({ email, password });
+    if (!success) {
+      alert("Đăng nhập thất bại, vui lòng thử lại");
     } else {
-      alert("Incorrect email or password");
+      router.navigate("/(tabs)");
     }
   };
 
+  const navigateToSignUp = () => {
+    router.navigate("/(auth)/signup");
+  };
+  
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
@@ -41,9 +42,11 @@ export default function SignInScreen() {
       <Form style={styles.formContainer}>
         <Form.Item
           hasFeedback
-          name="field_a"
-          validateTrigger="onBlur"
-          rules={[{ max: 3 }]}
+          name="email"
+          rules={[
+            { required: true, message: "Please input your email !" },
+            { type: "email", message: "The input is not valid E-mail !" },
+          ]}
         >
           <Input
             style={styles.input}
@@ -52,8 +55,12 @@ export default function SignInScreen() {
             onChangeText={setEmail}
           />
         </Form.Item>
-        <Form.Item rules={[{ required: true }]}>
-          <TextInput
+        <Form.Item
+          name="password"
+          hasFeedback
+          rules={[{ required: true, message: "Please input your password !" }]}
+        >
+          <Input
             style={styles.input}
             placeholder="Password"
             secureTextEntry
@@ -62,9 +69,9 @@ export default function SignInScreen() {
           />
         </Form.Item>
         <Form.Item>
-          <TouchableOpacity onPress={handleSignIn} style={styles.signInButton}>
-            <Text style={styles.buttonText}>Sign In</Text>
-          </TouchableOpacity>
+          <Button type="primary" onPress={handleLogin} loading={loading}>
+            Sign In
+          </Button>
         </Form.Item>
       </Form>
 
@@ -72,7 +79,12 @@ export default function SignInScreen() {
         <TouchableOpacity>
           <Text style={styles.footerText}>Forgot Password?</Text>
         </TouchableOpacity>
-        <Text style={styles.footerText}>Don't have an account? Sign up</Text>
+        <View style={{ flexDirection: "row" }}>
+          <Text style={styles.footerText}>Don't have an account? </Text>
+          <TouchableOpacity onPress={navigateToSignUp}>
+            <Text style={styles.footerText}>Sign up</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   );
@@ -105,20 +117,8 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 5,
-    marginBottom: 15,
-    paddingLeft: 10,
+    paddingHorizontal: 10,
     fontSize: 16,
-  },
-  signInButton: {
-    backgroundColor: "#007BFF",
-    paddingVertical: 15,
-    borderRadius: 5,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
   },
   footer: {
     marginTop: 20,
