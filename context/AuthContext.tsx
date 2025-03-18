@@ -1,6 +1,7 @@
 import { LoginCredentials } from '@/apis/auth.api';
 import api from '@/apis/axiosCustom';
 import { appUrls } from '@/apis/contants';
+import { Toast } from '@ant-design/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 
@@ -26,7 +27,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // using temp accessToken for user
     AsyncStorage.getItem("accessToken").then((accessToken) => {
       if (accessToken) {
-        setUser(JSON.parse('User'));
+        setUser({email: 'admin@gmail.com'});
       }
       setLoading(false);
     });
@@ -53,7 +54,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         return false;
       }
     } catch (error) {
-      console.error("Login error:", error);
       return false;
     }
   };
@@ -62,7 +62,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       // Xóa người dùng khỏi bộ nhớ (AsyncStorage hoặc AsyncStorage)
       setUser(null);
-      await AsyncStorage.removeItem('user');
+      await AsyncStorage.removeItem('accessToken');
+      await AsyncStorage.removeItem('refreshToken');
     } catch (error) {
       console.error("Logout error:", error);
     }

@@ -1,7 +1,8 @@
+import { LoginCredentials } from "@/apis/auth.api";
 import { useAuth } from "@/context/AuthContext";
-import { Button, Form, Input } from "@ant-design/react-native";
+import { Button, Form, Input, Toast } from "@ant-design/react-native";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -12,34 +13,41 @@ import {
 
 export default function SignInScreen() {
   const router = useRouter();
+  const [form] = Form.useForm();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const { login, loading } = useAuth();
+  const { login, loading, user } = useAuth();
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      alert("Vui lòng nhập đầy đủ email và mật khẩu");
-      return;
+  useEffect(() => {
+    if(user) {
+      router.replace("/(home)");
     }
-    const success = await login({ email, password });
-    if (!success) {
-      alert("Đăng nhập thất bại, vui lòng thử lại");
+  },[user])
+
+  const handleSubmitBtn = async () => {
+    form.submit();
+  };
+
+  const handleLogin = async (body: LoginCredentials) => {
+    const success = await login(body);
+    if (success) {
+      router.navigate("/(home)");
     } else {
-      router.navigate("/(tabs)");
+      Toast.fail("Login fail, Please try again");
     }
   };
 
   const navigateToSignUp = () => {
     router.navigate("/(auth)/signup");
   };
-  
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Sign In</Text>
       </View>
 
-      <Form style={styles.formContainer}>
+      <Form style={styles.formContainer} form={form} onFinish={handleLogin}>
         <Form.Item
           hasFeedback
           name="email"
@@ -49,6 +57,7 @@ export default function SignInScreen() {
           ]}
         >
           <Input
+            autoCapitalize="none"
             style={styles.input}
             placeholder="Email"
             value={email}
@@ -69,7 +78,7 @@ export default function SignInScreen() {
           />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" onPress={handleLogin} loading={loading}>
+          <Button type="primary" onPress={handleSubmitBtn} loading={loading}>
             Sign In
           </Button>
         </Form.Item>
