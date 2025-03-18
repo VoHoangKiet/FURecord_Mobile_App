@@ -5,7 +5,7 @@ import { TouchableOpacity } from "react-native"
 const CartComponent = () => {
   const router = useRouter();
     const navigateCart = () => {
-        router.navigate('/+not-found')
+        router.navigate('/order')
     }
     return (
         <TouchableOpacity onPress={navigateCart}>
