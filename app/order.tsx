@@ -16,7 +16,7 @@ export default function OrderScreen() {
       <View style={styles.footer}>
         <Button
           style={styles.btnCheckout}
-          onPress={() => router.navigate("/(home)/(learn)")}
+          onPress={() => router.navigate("/(home)/learn")}
         >
           <Text style={styles.btnCheckoutText}>Proceed to Checkout</Text>
         </Button>

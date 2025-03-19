@@ -20,16 +20,16 @@ export default function HomeLayout() {
         }}
       />
       <Tabs.Screen
-        name="(flashcard)"
+        name="document"
         options={{
-          title: "FlashCard",
+          title: "Document",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="book-outline" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="(learn)"
+        name="learns"
         options={{
           title: "Learning",
           tabBarIcon: ({ color, size }) => (

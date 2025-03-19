@@ -3,7 +3,7 @@ import { Rating } from "react-native-ratings";
 
 export const Thumbnail = () => {
   return (
-    <TouchableOpacity style={styles.container}>
+    <View style={styles.container}>
       <Image
         source={{
           uri: "https://edwize.org/wp-content/uploads/Coursera-vs-Udemy-Featured.jpg",
@@ -19,20 +19,28 @@ export const Thumbnail = () => {
           <Text style={styles.title} numberOfLines={2}>
             Introduction to Git for Gitlab projects
           </Text>
-          <Text>Vo Hoang Kiet</Text>
-          <View style={{ flexDirection: "row", gap: 10 }}>
-            <Rating
-              style={{ width: 70 }}
-              ratingCount={5}
-              imageSize={15}
-              readonly
-            />
-            <Text style={{ marginTop: -1.8 }}>(130.015)</Text>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between", alignItems: 'center' }}
+          >
+            <View>
+              <Text>Vo Hoang Kiet</Text>
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                <Rating
+                  style={{ width: 70 }}
+                  ratingCount={5}
+                  imageSize={15}
+                  readonly
+                />
+                <Text style={{ marginTop: -1.8 }}>(130.015)</Text>
+              </View>
+            </View>
+            <View>
+              <Text style={styles.money}>$ 199.000</Text>
+            </View>
           </View>
-          <Text style={styles.money}>$ 199.000</Text>
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
@@ -67,5 +75,6 @@ const styles = StyleSheet.create({
   },
   money: {
     fontWeight: "bold",
+    fontSize: 18,
   },
 });
