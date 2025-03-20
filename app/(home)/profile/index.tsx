@@ -1,5 +1,6 @@
 import { useAuth } from "@/context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React from "react";
 import {
   View,
@@ -12,6 +13,10 @@ import {
 
 export default function ProfileScreen() {
   const { user } = useAuth();
+  const router = useRouter();
+  const handleUpdateProfile = () => {
+    router.navigate("/(home)/profile/update");
+  }
   return (
     <ScrollView style={styles.container}>
       <View style={styles.profileContainer}>
@@ -23,8 +28,8 @@ export default function ProfileScreen() {
         <TouchableOpacity>
           <Text style={styles.expert}>Register to become an Expert</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuText}>Settings</Text>
+        <TouchableOpacity style={styles.menuItem} onPress={handleUpdateProfile}>
+          <Text style={styles.menuText}>Update Your Profile</Text>
           <Ionicons name="chevron-forward-outline" size={18} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem}>

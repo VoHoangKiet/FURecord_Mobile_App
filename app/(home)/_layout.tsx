@@ -14,9 +14,10 @@ export default function HomeLayout() {
         name="index"
         options={{
           title: "Home",
+          headerTitle: "",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home-outline" size={size} color={color} />
-          ),
+          )
         }}
       />
       <Tabs.Screen
@@ -38,7 +39,7 @@ export default function HomeLayout() {
         }}
       />
       <Tabs.Screen
-        name="(profile)"
+        name="profile"
         options={{
           title: "Profile",
           tabBarIcon: ({ color, size }) => (

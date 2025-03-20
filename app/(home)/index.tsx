@@ -10,7 +10,8 @@ export default function HomeScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Sign In</Text>
+        <Text style={styles.title}>Hello ! Vo Hoang Kiet</Text>
+        <Text >Full stack web developer</Text>
       </View>
     </ScrollView>
   );
@@ -18,13 +19,12 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: "#F5F5F5",
     paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingTop: 10,
   },
   header: {
-    alignItems: "center",
+    alignItems: "flex-start",
   },
   title: {
     fontSize: 24,
