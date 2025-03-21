@@ -43,11 +43,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = async (credentials: LoginCredentials): Promise<boolean> => {
     try {
-      const response = await api.post(`${appUrls.authenURL}/login`, credentials);
+      const response = await api.post(`${appUrls.url}/login`, credentials);
 
-      if (response.data.data.accessToken) {
-        AsyncStorage.setItem('accessToken', response.data.data.accessToken);
-        AsyncStorage.setItem('refreshToken', response.data.data.refreshToken);
+      if (response.data.token) {
+        AsyncStorage.setItem('token', response.data.token);
+        AsyncStorage.setItem('role', response.data.role);
         return true;
       } else {
         console.error("Login failed:", response.data.message);
@@ -62,8 +62,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       // Xóa người dùng khỏi bộ nhớ (AsyncStorage hoặc AsyncStorage)
       setUser(null);
-      await AsyncStorage.removeItem('accessToken');
-      await AsyncStorage.removeItem('refreshToken');
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('role');
     } catch (error) {
       console.error("Logout error:", error);
     }

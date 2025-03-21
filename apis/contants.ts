@@ -6,12 +6,14 @@ const urls = {
     tradeURL: "http://127.0.0.1:8082/profile",
     userURL: "http://127.0.0.1:8082/profile",
     stockURL: "http://127.0.0.1:8082/profile",
+    url: "http://127.0.0.1:4000"
   },
   development: {
     authenURL: "https://furecods.site/api/auth",
     tradeURL: "http://127.0.0.1:8082/profile",
     userURL: "http://127.0.0.1:8082/profile",
     stockURL: "http://127.0.0.1:8082/profile",
+    url: "http://localhost:4000"
   },
 };
 

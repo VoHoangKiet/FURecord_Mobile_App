@@ -1,4 +1,5 @@
 import { useAuth } from "@/context/AuthContext";
+import { Modal } from "@ant-design/react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
@@ -12,10 +13,21 @@ import {
 } from "react-native";
 
 export default function ProfileScreen() {
-  const { user } = useAuth();
+  const { user,logout } = useAuth();
   const router = useRouter();
   const handleUpdateProfile = () => {
     router.navigate("/(home)/profile/update");
+  }
+
+  const handleLogout = () => {
+    logout();
+    router.push('/(auth)');
+  }
+  const onButtonLogout = () => {
+    Modal.alert('Logout', 'Are you sure you want to log out ?', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Logout', onPress: () => handleLogout() },
+    ])
   }
   return (
     <ScrollView style={styles.container}>
@@ -56,7 +68,7 @@ export default function ProfileScreen() {
           <Text style={styles.menuText}>Stop Service</Text>
           <Ionicons name="chevron-forward-outline" size={18} />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={onButtonLogout}>
           <Text style={styles.expert}>Logout</Text>
         </TouchableOpacity>
       </View>
