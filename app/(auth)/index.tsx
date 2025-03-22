@@ -1,6 +1,7 @@
-import { LoginCredentials } from "@/apis/auth.api";
+import { getProfileInfo, LoginCredentials } from "@/apis/auth.api";
 import { useAuth } from "@/context/AuthContext";
 import { Button, Form, Input, Toast } from "@ant-design/react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -19,10 +20,10 @@ export default function SignInScreen() {
   const { login, loading, user } = useAuth();
 
   useEffect(() => {
-    if(user) {
+    if (user) {
       router.replace("/(home)");
     }
-  },[user])
+  }, [user])
 
   const handleSubmitBtn = async () => {
     form.submit();

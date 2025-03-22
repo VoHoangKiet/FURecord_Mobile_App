@@ -3,36 +3,42 @@ import { useState } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
 interface CardProps {
+  id: number,
   title: string,
-  author: string
+  author: string,
+  state: "active" | "pending",
+  likes: number,
+  dislikes: number,
+  onPress: (id: number) => void,
 }
 
-export const CardComponent: React.FC<CardProps> = (props) => {
-  const [likes, setLikes] = useState(2);
-  const [dislikes, setDislikes] = useState(0);
-
-  const handleLike = () => setLikes(likes + 1);
-  const handleDislike = () => setDislikes(dislikes + 1);
+export const CardComponent: React.FC<CardProps> = ({ id, title, author, state, dislikes, likes, onPress }) => {
   return (
     <WingBlank style={styles.card} size="md">
       <View style={styles.cardContent}>
-        <TouchableOpacity>
-          <Text style={styles.cardTitle}>{props.title}</Text>
+        <TouchableOpacity onPress={() => onPress(id)}>
+          <Text style={styles.cardTitle}>{title}</Text>
         </TouchableOpacity>
-        <Text style={styles.cardDescription}>{props.author}</Text>
-        <View style={[styles.active, { backgroundColor: 'lightgreen' }]} onPress={handleLike}>
-          <Text style={{color: 'green'}}>Active</Text>
-        </View>
+        <Text style={styles.cardDescription}>{author}</Text>
+        {state === "active" ? (
+          <View style={[styles.active, { backgroundColor: 'lightgreen', width: 50 }]}>
+            <Text style={{ color: 'green' }}>Active</Text>
+          </View>
+        ) : (
+          <View style={[styles.active, { backgroundColor: 'lightyellow', width: 65 }]}>
+            <Text style={{ color: 'orange' }}>Pending</Text>
+          </View>
+        )}
       </View>
       <View style={{ alignItems: "center", marginTop: 10 }}>
-        <TouchableOpacity style={[styles.button, { backgroundColor: '#67d075' }]} onPress={handleLike}>
+        <View style={[styles.button, { backgroundColor: '#67d075' }]}>
           <Icon name="like" color="green" />
           <Text style={styles.buttonText}>{likes}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, { backgroundColor: 'lightyellow' }]} onPress={handleDislike}>
+        </View>
+        <View style={[styles.button, { backgroundColor: 'lightyellow' }]}>
           <Icon name="dislike" color="yellow" />
           <Text style={styles.buttonText}>{dislikes}</Text>
-        </TouchableOpacity>
+        </View>
       </View>
     </WingBlank>
   )
@@ -50,7 +56,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 8,
     flexDirection: "row",
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    minWidth: 200
   },
   cardContent: {
     padding: 10,
@@ -67,12 +74,10 @@ const styles = StyleSheet.create({
   },
   active: {
     marginTop: 5,
-    flexDirection: 'row',
-    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 10,
     padding: 5,
     borderWidth: 0.5,
-    width: 50
   },
   button: {
     flexDirection: 'row',

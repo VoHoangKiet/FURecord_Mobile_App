@@ -13,6 +13,9 @@ export default function ProfileLayout() {
       <Stack.Screen
         name="update"
       />
+      <Stack.Screen
+        name="[id]"
+      />
     </Stack>
   );
 }

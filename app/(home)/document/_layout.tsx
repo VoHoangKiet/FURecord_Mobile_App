@@ -10,6 +10,9 @@ export default function FlashCardLayout() {
       <Stack.Screen
         name="index"
       />
+      <Stack.Screen
+        name="[docId]"
+      />
     </Stack>
   );
 }

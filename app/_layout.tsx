@@ -8,6 +8,7 @@ import { Provider as AntdProvider } from "@ant-design/react-native";
 import en_US from "@ant-design/react-native/lib/locale-provider/en_US";
 
 import { AuthProvider } from "@/context/AuthContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -26,17 +27,30 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
+  const queryClient = new QueryClient({
+    // defaultOptions: {
+    //   queries: {
+    //     gcTime: 5 * 60 * 1000,
+    //     staleTime: 30 * 1000,
+    //     refetchOnWindowFocus: false,
+    //     refetchOnReconnect: true,
+    //     refetchInterval: 60 * 1000
+    //   },
+    // },
+  });
 
   return (
-    <AuthProvider>
-      <AntdProvider locale={en_US}>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <AntdProvider locale={en_US}>
           <Stack>
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen name="(home)" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
           </Stack>
           <StatusBar style="auto" />
-      </AntdProvider>
-    </AuthProvider>
+        </AntdProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
