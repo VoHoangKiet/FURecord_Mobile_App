@@ -1,8 +1,9 @@
+import { getRole } from "@/apis/auth.api";
 import { useAuth } from "@/context/AuthContext";
 import { Modal } from "@ant-design/react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -13,33 +14,64 @@ import {
 } from "react-native";
 
 export default function ProfileScreen() {
-  const { user,logout } = useAuth();
+  const { user, logout, loading } = useAuth();
+  const [role, setRole] = useState<string>("");
+
   const router = useRouter();
   const handleUpdateProfile = () => {
     router.navigate("/(home)/profile/update");
-  }
+  };
 
   const handleLogout = () => {
     logout();
-    router.push('/(auth)');
-  }
+    router.push("/(auth)");
+  };
+
   const onButtonLogout = () => {
-    Modal.alert('Logout', 'Are you sure you want to log out ?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Logout', onPress: () => handleLogout() },
-    ])
+    Modal.alert("Logout", "Are you sure you want to log out ?", [
+      { text: "Cancel", style: "cancel" },
+      { text: "Logout", onPress: () => handleLogout() },
+    ]);
+  };
+
+  useEffect(() => {
+    getRoleUser();
+  }, []);
+  const getRoleUser = async () => {
+    const roleStorage = (await getRole()) as string;
+    setRole(roleStorage);
+  };
+
+  if (!user || loading) {
+    return (
+      <View>
+        <Text>Loading...</Text>
+      </View>
+    );
   }
   return (
     <ScrollView style={styles.container}>
       <View style={styles.profileContainer}>
-        <Image
-          source={{ uri: "https://randomuser.me/api/portraits/men/10.jpg" }}
-          style={styles.profileImage}
-        />
-        <Text style={styles.username}>{user?.email}</Text>
-        <TouchableOpacity>
-          <Text style={styles.expert}>Register to become an Expert</Text>
-        </TouchableOpacity>
+        <Image source={{ uri: user.avatarUrl }} style={styles.profileImage} />
+        <View>
+        <Text style={styles.username}>{user.email}</Text>
+        </View>
+        <View
+          style={{
+            alignItems: "center",
+          }}
+        >
+          {role === "USER" ? (
+            <View>
+              <Text style={[styles.role, {marginHorizontal: "auto"}]}>{user.role}</Text>
+              <TouchableOpacity>
+                <Text style={styles.expert}>Register to become an Expert</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <Text style={[styles.role, { width: 80 }]}>{role}</Text>
+          )}
+        </View>
         <TouchableOpacity style={styles.menuItem} onPress={handleUpdateProfile}>
           <Text style={styles.menuText}>Update Your Profile</Text>
           <Ionicons name="chevron-forward-outline" size={18} />
@@ -101,8 +133,20 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textAlign: "center",
   },
-  expert: {
+  role: {
     marginVertical: 10,
+    fontSize: 15,
+    textAlign: "center",
+    fontWeight: "bold",
+    color: "#a6c305",
+    backgroundColor: "lightyellow",
+    borderWidth: 0.5,
+    width: 50,
+    padding: 2,
+    borderRadius: 5,
+  },
+  expert: {
+    marginBottom: 10,
     fontSize: 15,
     textAlign: "center",
     fontWeight: "bold",

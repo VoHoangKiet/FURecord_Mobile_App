@@ -1,41 +1,66 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { User } from "@/apis/auth.api";
+import { Course } from "@/apis/courses.api";
+import { useAllInfoUser } from "@/hooks/useAllInfoUser";
+import { getTotalRating } from "@/utils/getTotalRating";
+import { useEffect, useState } from "react";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { Rating } from "react-native-ratings";
 
-export const Thumbnail = () => {
+type ThumbnailProps = {
+  course: Course;
+};
+export const Thumbnail: React.FC<ThumbnailProps> = ({ course }) => {
+  const { data: users } = useAllInfoUser();
+  const [userExpert, setUserExpert] = useState<User>();
+  useEffect(() => {
+    if (users) {
+      const expert = users.find((user) => user.id === Number(course.expertId));
+      setUserExpert(expert);
+    }
+  }, [users, course]);
+  
   return (
     <View style={styles.container}>
       <Image
         source={{
-          uri: "https://edwize.org/wp-content/uploads/Coursera-vs-Udemy-Featured.jpg",
+          uri: course.bannerUrl,
         }}
         style={styles.thumbnail}
       />
       <View style={styles.content}>
         <Image
-          source={{ uri: "https://randomuser.me/api/portraits/men/10.jpg" }}
+          source={{ uri: userExpert?.avatarUrl }}
           style={styles.profileImage}
         />
         <View style={styles.textContent}>
           <Text style={styles.title} numberOfLines={2}>
-            Introduction to Git for Gitlab projects
+            {course.name}
           </Text>
           <View
-            style={{ flexDirection: "row", justifyContent: "space-between", alignItems: 'center' }}
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
           >
-            <View>
-              <Text>Vo Hoang Kiet</Text>
+             <View>
+            <Text>{userExpert ? userExpert.fullName : "Expert"}</Text>
+            {course.reviews.length > 0 && (
               <View style={{ flexDirection: "row", gap: 10 }}>
                 <Rating
                   style={{ width: 70 }}
-                  ratingCount={5}
+                  startingValue={getTotalRating(course.reviews)}
                   imageSize={15}
                   readonly
                 />
-                <Text style={{ marginTop: -1.8 }}>(130.015)</Text>
+                <Text style={{ marginTop: -1.8 }}>
+                  ({getTotalRating(course.reviews)})
+                </Text>
               </View>
-            </View>
+            )}
+          </View>
             <View>
-              <Text style={styles.money}>$ 199.000</Text>
+              <Text style={styles.money}>$ {course.price.toFixed(2)}</Text>
             </View>
           </View>
         </View>

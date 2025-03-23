@@ -1,16 +1,21 @@
 import React from "react";
 import { View, StyleSheet, Dimensions } from "react-native";
-import { useVideoPlayer, VideoView } from "expo-video";
+import { useVideoPlayer, VideoView, VideoViewProps } from "expo-video";
 
-export const VideoPlayer = ({ videoUrl }: { videoUrl: string }) => {
+interface VideoPlayerProps extends Omit<VideoViewProps, "player"> {
+  videoUrl: string;
+}
+
+export const VideoPlayer = ({ videoUrl, ...props }: VideoPlayerProps) => {
   const player = useVideoPlayer(videoUrl, (player) => {
     player.loop = true;
     player.staysActiveInBackground = true;
     player.play();
   });
+
   return (
     <View style={styles.container}>
-      <VideoView player={player} style={styles.backgroundVideo} />
+      <VideoView player={player} style={styles.backgroundVideo} {...props} />
     </View>
   );
 };

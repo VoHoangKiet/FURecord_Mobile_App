@@ -29,6 +29,10 @@ export const getToken = async (): Promise<string> => {
   return (await AsyncStorage.getItem("token")) as string;
 };
 
+export const getRole = async (): Promise<string> => {
+  return (await AsyncStorage.getItem("role")) as string;
+};
+
 export const getAllUser = async (): Promise<User[]> => {
   const response = await api.get(`${appUrls.backendUrl}/public/users`);
   return response.data;

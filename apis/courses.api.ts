@@ -6,6 +6,13 @@ export interface Lesson {
   lessonOrder: number;
   name: string;
 }
+export interface ReviewCourse {
+  id: number;
+  userId: number;
+  content: string;
+  createdAt: string;
+  rate: number;
+}
 
 export interface Course {
   id: number;
@@ -18,26 +25,12 @@ export interface Course {
   name: string;
   lessons: Lesson[];
   orders: any[];
-  reviews: any[];
+  reviews: ReviewCourse[];
   topicId: string;
   state: "active" | "pending";
 }
 
-export const getAllCourses = async (): Promise<Document[]> => {
-  const response = await api.get(`${appUrls.backendUrl}/document/all`);
+export const getAllCourses = async (): Promise<Course[]> => {
+  const response = await api.get(`${appUrls.backendUrl}/public/courses`);
   return response.data;
-};
-
-export const getCourseById = async (
-  courseId: number
-): Promise<Document | null> => {
-  try {
-    const response = await api.get(`${appUrls.backendUrl}/document`, {
-      params: { courseId },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching document:", error);
-    return null;
-  }
 };

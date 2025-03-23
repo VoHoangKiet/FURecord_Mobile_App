@@ -1,6 +1,6 @@
 import api from "./axiosCustom"
 import { appUrls } from "./contants"
-export interface Review {
+export interface ReviewDocument {
     id: number;
     state: "helpful" | "unhelpful";
     userId: string;
@@ -15,7 +15,7 @@ export interface Document {
     topicId: string;
     title: string;
     state: "active" | "pending";
-    reviews: Review[];
+    reviews: ReviewDocument[];
 }
 
 export const getAllDocuments = async ():Promise<Document[]> => {
@@ -23,7 +23,7 @@ export const getAllDocuments = async ():Promise<Document[]> => {
     return response.data;
 }
 
-export const getDocumentById = async (documentId: number):Promise<Document | null> => {
+export const getDocumentById = async (documentId: number):Promise<Document | undefined> => {
     try {
         const response = await api.get(`${appUrls.backendUrl}/document`, {
           params: { documentId }
@@ -31,6 +31,6 @@ export const getDocumentById = async (documentId: number):Promise<Document | nul
         return response.data;
       } catch (error) {
         console.error("Error fetching document:", error);
-        return null;
+        return undefined;
       }
 }

@@ -15,7 +15,7 @@ export default function DocumentDetail() {
   if (!document) {
     return (
       <View style={styles.container}>
-        <Text>Document does not exist</Text>
+        <Text>Waiting...</Text>
       </View>
     );
   }
@@ -27,7 +27,7 @@ export default function DocumentDetail() {
     : 0;
   const author =
     users?.find((user) => user.id === Number(document.userId))?.fullName ||
-    "Unknown";
+    "Author";
 
   return (
     document && (
