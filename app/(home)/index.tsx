@@ -22,7 +22,7 @@ export default function HomeScreen() {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Hello ! {user?.fullName}</Text>
-        <Text>Full stack web developer</Text>
+        <Text>What you want to learn today ?</Text>
       </View>
       <View style={styles.content}>
         <Text style={styles.title}>Documents</Text>

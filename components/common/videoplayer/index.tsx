@@ -4,13 +4,17 @@ import { useVideoPlayer, VideoView, VideoViewProps } from "expo-video";
 
 interface VideoPlayerProps extends Omit<VideoViewProps, "player"> {
   videoUrl: string;
+  isPause?: boolean
 }
 
-export const VideoPlayer = ({ videoUrl, ...props }: VideoPlayerProps) => {
+export const VideoPlayer = ({ videoUrl,isPause, ...props }: VideoPlayerProps) => {
   const player = useVideoPlayer(videoUrl, (player) => {
     player.loop = true;
     player.staysActiveInBackground = true;
     player.play();
+    if(isPause) {
+      player.pause();
+    }
   });
 
   return (

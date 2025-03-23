@@ -11,7 +11,7 @@ import { VideoPlayer } from "@/components/common";
 import { Rating } from "react-native-ratings";
 import { Button, Icon } from "@ant-design/react-native";
 import { useCourseById } from "@/hooks/useAllCourses";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { User } from "@/apis/auth.api";
 import { useAllInfoUser } from "@/hooks/useAllInfoUser";
 import { getTotalRating } from "@/utils/getTotalRating";
@@ -23,6 +23,7 @@ export default function CourseDetail() {
   const { data: users } = useAllInfoUser();
   const [userExpert, setUserExpert] = useState<User>();
   const [visibleVideo, setVisibleVideo] = useState<string>("");
+  
   if (!course) {
     return (
       <View style={styles.container}>
@@ -36,10 +37,9 @@ export default function CourseDetail() {
       setUserExpert(expert);
     }
   }, [users, course]);
-
   return (
     <ScrollView style={styles.container}>
-      <VideoPlayer videoUrl={course.lessons[0].videoUrl} />
+      <VideoPlayer videoUrl={!visibleVideo ? course.lessons[0].videoUrl : ""}/>
       <Text style={styles.title}>{course.name}</Text>
       <Text style={styles.description}>{course.description}</Text>
       <View style={{ flexDirection: "row", gap: 10 }}>
@@ -96,7 +96,7 @@ export default function CourseDetail() {
           <Text style={styles.itemText}>{lesson.name}</Text>
           {lesson.videoUrl && (
             <TouchableOpacity
-              onPress={() => setVisibleVideo(lesson.id.toString())}
+              onPress={() => setVisibleVideo(lesson.videoUrl)}
             >
               <Icon name="play-circle" size={22} color="#95118e" />
             </TouchableOpacity>
@@ -106,7 +106,7 @@ export default function CourseDetail() {
       <Modal visible={!!visibleVideo} animationType="slide" transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            {visibleVideo && <VideoPlayer videoUrl={visibleVideo} />}
+            {visibleVideo && <VideoPlayer videoUrl={visibleVideo} isPause/>}
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setVisibleVideo("")}
