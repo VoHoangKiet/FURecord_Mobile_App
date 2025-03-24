@@ -1,8 +1,13 @@
 import { Thumbnail } from "@/components/common";
 import { useAllCourses } from "@/hooks/useAllCourses";
-import { View, WingBlank } from "@ant-design/react-native";
+import { WingBlank } from "@ant-design/react-native";
 import { useRouter } from "expo-router";
-import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 
 export default function LearningScreen() {
   const router = useRouter();
@@ -10,14 +15,15 @@ export default function LearningScreen() {
   const handleNavigate = (courseId: number) => {
     router.push({ pathname: "/(home)/learns/[id]", params: { id: courseId } });
   };
-  if(!courses) {
+  if (!courses) {
     return (
-      <View>
-        <Text>Loading...</Text>
-      </View>
-    )
+      <ActivityIndicator
+        size="large"
+        style={{ flex: 1, justifyContent: "center" }}
+      />
+    );
   }
-  
+
   return (
     <ScrollView style={styles.container}>
       <WingBlank size="sm">
@@ -26,7 +32,7 @@ export default function LearningScreen() {
             key={course.id}
             onPress={() => handleNavigate(course.id)}
           >
-            <Thumbnail course={course}/>
+            <Thumbnail course={course} />
           </TouchableOpacity>
         ))}
       </WingBlank>

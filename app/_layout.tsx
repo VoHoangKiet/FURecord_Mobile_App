@@ -49,6 +49,9 @@ export default function RootLayout() {
               <Stack.Screen name="(auth)" options={{ headerShown: false }} />
               <Stack.Screen name="(home)" options={{ headerShown: false }} />
               <Stack.Screen name="+not-found" />
+              <Stack.Screen name="order" />
+              <Stack.Screen name="payment-result" />
+              <Stack.Screen name="stripe-payment" />
             </Stack>
             <StatusBar style="auto" />
           </AntdProvider>

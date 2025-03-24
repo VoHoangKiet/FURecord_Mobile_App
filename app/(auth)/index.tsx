@@ -32,7 +32,7 @@ export default function SignInScreen() {
   const handleLogin = async (body: LoginCredentials) => {
     const success = await login(body);
     if (success) {
-      router.navigate("/(home)");
+      router.replace("/(home)");
     } else {
       Toast.fail("Login fail, Please try again");
     }

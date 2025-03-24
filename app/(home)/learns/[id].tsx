@@ -6,19 +6,20 @@ import {
   TouchableOpacity,
   Modal,
 } from "react-native";
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 import { VideoPlayer } from "@/components/common";
 import { Rating } from "react-native-ratings";
 import { Button, Icon, Toast } from "@ant-design/react-native";
 import { useCourseById } from "@/hooks/useAllCourses";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { User } from "@/apis/auth.api";
 import { useAllInfoUser } from "@/hooks/useAllInfoUser";
 import { getTotalRating } from "@/utils/getTotalRating";
 import moment from "moment";
 import { useStore } from "@/modules/store";
+import { observer } from "mobx-react-lite";
 
-export default function CourseDetail() {
+const CourseDetail = observer(() => {
   const params = useLocalSearchParams<{ id: string }>();
   const { data: course } = useCourseById(Number(params.id));
   const { data: users } = useAllInfoUser();
@@ -33,13 +34,20 @@ export default function CourseDetail() {
       </View>
     );
   }
+  const checkContainCart = (): boolean => {
+    return !!cartStore.cart.find((item) => item.id === course.id);
+  };
   useEffect(() => {
     if (users) {
       const expert = users.find((user) => user.id === Number(course.expertId));
       setUserExpert(expert);
     }
+    return () => {
+      setVisibleVideo("no-video");
+    };
   }, [users, course]);
-  const handleAddtoCart = () => {
+
+  const handleAddtoCart = useCallback(() => {
     try {
       cartStore.addToCart(course);
     } catch (error: unknown) {
@@ -49,6 +57,9 @@ export default function CourseDetail() {
         Toast.fail("An unknown error occurred.");
       }
     }
+  }, [cartStore.cart]);
+  const handleGotoCart = () => {
+    router.replace("/order");
   };
   return (
     <ScrollView style={styles.container}>
@@ -97,9 +108,15 @@ export default function CourseDetail() {
         <Button style={styles.btnBuy}>
           <Text style={styles.textbtnBuy}>Buy now</Text>
         </Button>
-        <Button onPress={handleAddtoCart}>
-          <Text style={styles.textbtnAddToCart}>Add to cart</Text>
-        </Button>
+        {!checkContainCart() ? (
+          <Button onPress={handleAddtoCart}>
+            <Text style={styles.textbtnAddToCart}>Add to cart</Text>
+          </Button>
+        ) : (
+          <Button onPress={handleGotoCart}>
+            <Text style={styles.textbtnAddToCart}>Go to cart</Text>
+          </Button>
+        )}
       </View>
       <Text style={[styles.title, { paddingVertical: 10 }]}>
         Course Curriculum
@@ -129,7 +146,9 @@ export default function CourseDetail() {
       </Modal>
     </ScrollView>
   );
-}
+});
+
+export default CourseDetail;
 
 const styles = StyleSheet.create({
   container: {

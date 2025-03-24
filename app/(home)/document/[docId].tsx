@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Platform } from "react-native";
 import { Link, useLocalSearchParams } from "expo-router";
 import { Rating } from "react-native-ratings";
 import { useDocumentById } from "@/hooks/useAllDocuments";
@@ -67,7 +67,7 @@ export default function DocumentDetail() {
             <Text style={styles.buttonText}>{reviewCounts.unhelpful}</Text>
           </TouchableOpacity>
         </View>
-        {document.fileUrl ? (
+        {(document.fileUrl && Platform.OS !== "web") ? (
           <Pdf
             trustAllCerts={false}
             source={{ uri: document.fileUrl, cache: true }}
