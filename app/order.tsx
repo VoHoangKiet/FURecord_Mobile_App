@@ -2,28 +2,36 @@ import { Empty } from "@/components/common";
 import { Button } from "@ant-design/react-native";
 import { useRouter } from "expo-router";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { observer } from "mobx-react-lite";
+import { useStore } from "@/modules/store";
 
-export default function OrderScreen() {
+const OrderScreen = observer(() => {
   const router = useRouter();
-  const order = [];
+  const { cartStore } = useStore();
   return (
     <ScrollView style={styles.container}>
-      {order.length > 0 ? (
+      {cartStore.cart.length > 0 ? (
         <Text>Order items will be displayed here</Text>
       ) : (
-        <Empty viewStyle={{marginVertical: 300}} title="Add course" content="Your cart is empty" />
+        <Empty
+          viewStyle={{ marginVertical: 300 }}
+          title="Add course"
+          content="Your cart is empty"
+        />
       )}
       <View style={styles.footer}>
         <Button
           style={styles.btnCheckout}
-          onPress={() => router.navigate("/(home)/learn")}
+          onPress={() => router.navigate("/(home)/learns")}
         >
           <Text style={styles.btnCheckoutText}>Proceed to Checkout</Text>
         </Button>
       </View>
     </ScrollView>
   );
-}
+});
+
+export default OrderScreen;
 
 const styles = StyleSheet.create({
   container: {

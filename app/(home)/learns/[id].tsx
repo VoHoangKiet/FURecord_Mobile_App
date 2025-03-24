@@ -9,21 +9,23 @@ import {
 import { Link, useLocalSearchParams } from "expo-router";
 import { VideoPlayer } from "@/components/common";
 import { Rating } from "react-native-ratings";
-import { Button, Icon } from "@ant-design/react-native";
+import { Button, Icon, Toast } from "@ant-design/react-native";
 import { useCourseById } from "@/hooks/useAllCourses";
 import { useEffect, useMemo, useState } from "react";
 import { User } from "@/apis/auth.api";
 import { useAllInfoUser } from "@/hooks/useAllInfoUser";
 import { getTotalRating } from "@/utils/getTotalRating";
 import moment from "moment";
+import { useStore } from "@/modules/store";
 
 export default function CourseDetail() {
   const params = useLocalSearchParams<{ id: string }>();
   const { data: course } = useCourseById(Number(params.id));
   const { data: users } = useAllInfoUser();
+  const { cartStore } = useStore();
   const [userExpert, setUserExpert] = useState<User>();
   const [visibleVideo, setVisibleVideo] = useState<string>("");
-  
+
   if (!course) {
     return (
       <View style={styles.container}>
@@ -37,9 +39,20 @@ export default function CourseDetail() {
       setUserExpert(expert);
     }
   }, [users, course]);
+  const handleAddtoCart = () => {
+    try {
+      cartStore.addToCart(course);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        Toast.fail(error.message);
+      } else {
+        Toast.fail("An unknown error occurred.");
+      }
+    }
+  };
   return (
     <ScrollView style={styles.container}>
-      <VideoPlayer videoUrl={!visibleVideo ? course.lessons[0].videoUrl : ""}/>
+      <VideoPlayer videoUrl={!visibleVideo ? course.lessons[0].videoUrl : ""} />
       <Text style={styles.title}>{course.name}</Text>
       <Text style={styles.description}>{course.description}</Text>
       <View style={{ flexDirection: "row", gap: 10 }}>
@@ -84,7 +97,7 @@ export default function CourseDetail() {
         <Button style={styles.btnBuy}>
           <Text style={styles.textbtnBuy}>Buy now</Text>
         </Button>
-        <Button>
+        <Button onPress={handleAddtoCart}>
           <Text style={styles.textbtnAddToCart}>Add to cart</Text>
         </Button>
       </View>
@@ -95,9 +108,7 @@ export default function CourseDetail() {
         <View style={styles.item} key={lesson.id}>
           <Text style={styles.itemText}>{lesson.name}</Text>
           {lesson.videoUrl && (
-            <TouchableOpacity
-              onPress={() => setVisibleVideo(lesson.videoUrl)}
-            >
+            <TouchableOpacity onPress={() => setVisibleVideo(lesson.videoUrl)}>
               <Icon name="play-circle" size={22} color="#95118e" />
             </TouchableOpacity>
           )}
@@ -106,7 +117,7 @@ export default function CourseDetail() {
       <Modal visible={!!visibleVideo} animationType="slide" transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            {visibleVideo && <VideoPlayer videoUrl={visibleVideo} isPause/>}
+            {visibleVideo && <VideoPlayer videoUrl={visibleVideo} />}
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setVisibleVideo("")}
@@ -187,8 +198,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  modalContent: {
-  },
+  modalContent: {},
   closeButton: {
     marginTop: 10,
     alignSelf: "center",
