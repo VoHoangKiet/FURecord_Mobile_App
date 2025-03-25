@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  BackHandler,
 } from "react-native";
 
 export default function SignInScreen() {
@@ -28,6 +29,18 @@ export default function SignInScreen() {
   const handleSubmitBtn = async () => {
     form.submit();
   };
+  useEffect(() => {
+    const backAction = () => {
+      if (user) {
+        return true;
+      }
+      return false;
+    };
+  
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+  
+    return () => backHandler.remove();
+  }, [user]);
 
   const handleLogin = async (body: LoginCredentials) => {
     const success = await login(body);

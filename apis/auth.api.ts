@@ -7,18 +7,24 @@ export interface LoginCredentials {
   password: string;
 }
 export interface User {
-  id: number,
-  about: string,
-  avatarUrl: string,
-  balance: number,
-  dob: Date | null,
-  email: string,
-  fullName: string,
-  gender: string | null,
-  legitMark: number,
-  role: string,
-  createdAt: Date,
-  updatedAt: Date
+  id: number;
+  about: string;
+  avatarUrl: string;
+  balance: number;
+  dob: Date | null;
+  email: string;
+  fullName: string;
+  gender: string | null;
+  legitMark: number;
+  role: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+export interface UpdateProfileDTO {
+  fullName: string;
+  about: string;
+  dob: Date;
+  gender: string;
 }
 export const getProfileInfo = async (): Promise<User> => {
   const response = await api.get(`${appUrls.backendUrl}/profile`);
@@ -36,4 +42,9 @@ export const getRole = async (): Promise<string> => {
 export const getAllUser = async (): Promise<User[]> => {
   const response = await api.get(`${appUrls.backendUrl}/public/users`);
   return response.data;
-}
+};
+
+export const updateUserProfile = async (body: UpdateProfileDTO) => {
+  const response = await api.put(`${appUrls.backendUrl}/user/profile`, body);
+  return response.data;
+};

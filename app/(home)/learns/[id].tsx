@@ -19,11 +19,13 @@ import { getTotalRating } from "@/utils/getTotalRating";
 import moment from "moment";
 import { useStore } from "@/modules/store";
 import { observer } from "mobx-react-lite";
+import { useAllTopics } from "@/hooks/useAllTopics";
 
 const CourseDetail = observer(() => {
   const params = useLocalSearchParams<{ id: string }>();
   const { data: course } = useCourseById(Number(params.id));
   const { data: users } = useAllInfoUser();
+  const { data: topics } = useAllTopics();
   const { cartStore } = useStore();
   const [userExpert, setUserExpert] = useState<User>();
   const [visibleVideo, setVisibleVideo] = useState<string>("");
@@ -67,6 +69,19 @@ const CourseDetail = observer(() => {
     <ScrollView style={styles.container}>
       <VideoPlayer videoUrl={!visibleVideo ? course.lessons[0].videoUrl : ""} />
       <Text style={styles.title}>{course.name}</Text>
+      {topics?.map((topic) => {
+        if (topic.id.toString() === course.topicId) {
+          return (
+            <Text
+              key={topic.id}
+              style={[styles.textTiny, { fontSize: 20, fontWeight: "bold" }]}
+            >
+              Topic: {topic.name}
+            </Text>
+          );
+        }
+        return null;
+      })}
       <Text style={styles.description}>{course.description}</Text>
       <View style={{ flexDirection: "row", gap: 10 }}>
         <Text style={styles.pointRating}>

@@ -11,6 +11,7 @@ import {
   Image,
   StyleSheet,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 
 export default function ProfileScreen() {
@@ -24,7 +25,7 @@ export default function ProfileScreen() {
 
   const handleLogout = () => {
     logout();
-    router.push("/(auth)");
+    router.replace("/(auth)");
   };
 
   const onButtonLogout = () => {
@@ -44,9 +45,10 @@ export default function ProfileScreen() {
 
   if (!user || loading) {
     return (
-      <View>
-        <Text>Loading...</Text>
-      </View>
+      <ActivityIndicator
+        size="large"
+        style={{ flex: 1, justifyContent: "center" }}
+      />
     );
   }
   return (
@@ -54,7 +56,7 @@ export default function ProfileScreen() {
       <View style={styles.profileContainer}>
         <Image source={{ uri: user.avatarUrl }} style={styles.profileImage} />
         <View>
-        <Text style={styles.username}>{user.email}</Text>
+          <Text style={styles.username}>{user.email}</Text>
         </View>
         <View
           style={{
@@ -63,7 +65,9 @@ export default function ProfileScreen() {
         >
           {role === "USER" ? (
             <View>
-              <Text style={[styles.role, {marginHorizontal: "auto"}]}>{user.role}</Text>
+              <Text style={[styles.role, { marginHorizontal: "auto" }]}>
+                {user.role}
+              </Text>
               <TouchableOpacity>
                 <Text style={styles.expert}>Register to become an Expert</Text>
               </TouchableOpacity>

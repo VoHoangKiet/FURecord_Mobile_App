@@ -1,31 +1,35 @@
-import { getProfileInfo, LoginCredentials, User } from '@/apis/auth.api';
-import api from '@/apis/axiosCustom';
-import { appUrls } from '@/apis/contants';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import { getProfileInfo, LoginCredentials, User } from "@/apis/auth.api";
+import api from "@/apis/axiosCustom";
+import { appUrls } from "@/apis/contants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
+import React, { createContext, useState, useEffect, ReactNode } from "react";
 
 interface AuthContextProps {
   user: User | null;
   loading: boolean;
   login: (credentials: LoginCredentials) => Promise<boolean>;
   logout: () => Promise<void>;
+  invalidateProfile: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextProps>({
   user: null,
   loading: true,
   login: async () => false,
-  logout: async () => { }
+  logout: async () => {},
+  invalidateProfile: async() => {}
 });
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const router = useRouter()
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if(!user) {
+    if (!user) {
       checkAuth();
     }
   }, []);
@@ -33,7 +37,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const checkAuth = async () => {
     try {
       setLoading(true);
-      const token = await AsyncStorage.getItem('token');
+      const token = await AsyncStorage.getItem("token");
       if (token) {
         const profile = await getProfileInfo();
         if (profile) {
@@ -52,10 +56,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = async (credentials: LoginCredentials): Promise<boolean> => {
     try {
       setLoading(true);
-      const response = await api.post(`${appUrls.backendUrl}/login`, credentials);
+      const response = await api.post(
+        `${appUrls.backendUrl}/login`,
+        credentials
+      );
       if (response.data.token) {
-        await AsyncStorage.setItem('token', response.data.token);
-        await AsyncStorage.setItem('role', response.data.role);
+        await AsyncStorage.setItem("token", response.data.token);
+        await AsyncStorage.setItem("role", response.data.role);
         const profile = await getProfileInfo();
         if (profile) {
           setUser(profile);
@@ -76,15 +83,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const logout = async () => {
     try {
       setUser(null);
-      await AsyncStorage.removeItem('token');
-      await AsyncStorage.removeItem('role');
+      await AsyncStorage.removeItem("token");
+      await AsyncStorage.removeItem("role");
     } catch (error) {
       console.error("Logout error:", error);
     }
   };
 
+  const invalidateProfile = async () => {
+    const profile = await getProfileInfo();
+    if (profile) {
+      setUser(profile);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, invalidateProfile }}>
       {children}
     </AuthContext.Provider>
   );
