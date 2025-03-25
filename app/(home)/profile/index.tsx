@@ -2,7 +2,7 @@ import { getRole } from "@/apis/auth.api";
 import { useAuth } from "@/context/AuthContext";
 import { Modal } from "@ant-design/react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -18,9 +18,12 @@ export default function ProfileScreen() {
   const { user, logout, loading } = useAuth();
   const [role, setRole] = useState<string>("");
 
-  const router = useRouter();
   const handleUpdateProfile = () => {
-    router.navigate("/(home)/profile/update");
+    router.push("/(home)/profile/update");
+  };
+
+  const handleUpdateProfileImage = () => {
+    router.push("/(home)/profile/update-image");
   };
 
   const handleLogout = () => {
@@ -76,12 +79,16 @@ export default function ProfileScreen() {
             <Text style={[styles.role, { width: 80 }]}>{role}</Text>
           )}
         </View>
+        <TouchableOpacity style={styles.menuItem} onPress={handleUpdateProfileImage}>
+          <Text style={styles.menuText}>Change Profile Image</Text>
+          <Ionicons name="chevron-forward-outline" size={18} />
+        </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={handleUpdateProfile}>
-          <Text style={styles.menuText}>Update Your Profile</Text>
+          <Text style={styles.menuText}>Update Your Info</Text>
           <Ionicons name="chevron-forward-outline" size={18} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuText}>E-Mail Settings</Text>
+          <Text style={styles.menuText}>My Resume</Text>
           <Ionicons name="chevron-forward-outline" size={18} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem}>
@@ -90,10 +97,6 @@ export default function ProfileScreen() {
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem}>
           <Text style={styles.menuText}>My Criteria</Text>
-          <Ionicons name="chevron-forward-outline" size={18} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuText}>My Resume</Text>
           <Ionicons name="chevron-forward-outline" size={18} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem}>

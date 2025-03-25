@@ -2,7 +2,7 @@ import { getProfileInfo, LoginCredentials } from "@/apis/auth.api";
 import { useAuth } from "@/context/AuthContext";
 import { Button, Form, Input, Toast } from "@ant-design/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
+import { useNavigationContainerRef, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -16,12 +16,13 @@ import {
 export default function SignInScreen() {
   const router = useRouter();
   const [form] = Form.useForm();
+  const navigationRef = useNavigationContainerRef();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const { login, loading, user } = useAuth();
 
   useEffect(() => {
-    if (user) {
+    if (user && navigationRef.isReady()) {
       router.replace("/(home)");
     }
   }, [user])

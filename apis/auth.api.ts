@@ -25,6 +25,7 @@ export interface UpdateProfileDTO {
   about: string;
   dob: Date;
   gender: string;
+  avatarUrl?: string;
 }
 export const getProfileInfo = async (): Promise<User> => {
   const response = await api.get(`${appUrls.backendUrl}/profile`);
@@ -46,5 +47,14 @@ export const getAllUser = async (): Promise<User[]> => {
 
 export const updateUserProfile = async (body: UpdateProfileDTO) => {
   const response = await api.put(`${appUrls.backendUrl}/user/profile`, body);
+  return response.data;
+};
+
+export const updateImageProfile = async (body: FormData): Promise<string> => {
+  const response = await api.patch(`${appUrls.backendUrl}/update-avatar`, body, {
+    headers: {
+      "content-type": "multipart/form-data",
+    },
+  });
   return response.data;
 };

@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 
-export default function FlashCardLayout() {
+export default function DocumentLayout() {
   return (
     <Stack
       screenOptions={{

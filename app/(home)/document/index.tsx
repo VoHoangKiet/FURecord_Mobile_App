@@ -4,13 +4,20 @@ import { getReviewCounts } from "@/utils/getReviewCounts";
 import { SearchBar } from "@ant-design/react-native";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet } from "react-native";
 
 export default function FlashCardScreen() {
   const router = useRouter();
   const { data: documents } = useAllDocuments();
   const [searchQuery, setSearchQuery] = useState("");
-
+  if (!documents) {
+    return (
+      <ActivityIndicator
+        size="large"
+        style={{ flex: 1, justifyContent: "center" }}
+      />
+    );
+  }
   const filteredDocuments = documents?.filter((doc) =>
     doc.title.toLowerCase().includes(searchQuery.toLowerCase())
   );

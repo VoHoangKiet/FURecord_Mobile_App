@@ -1,6 +1,6 @@
-import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import CartComponent from "@/components/order/Cart";
+import { Tabs } from "expo-router";
 
 export default function HomeLayout() {
   return (
@@ -40,6 +40,7 @@ export default function HomeLayout() {
       />
       <Tabs.Screen
         name="profile"
+        
         options={{
           title: "Profile",
           tabBarIcon: ({ color, size }) => (
