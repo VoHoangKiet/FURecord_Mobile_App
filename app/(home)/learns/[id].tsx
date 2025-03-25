@@ -5,6 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import { VideoPlayer } from "@/components/common";
@@ -29,9 +30,10 @@ const CourseDetail = observer(() => {
 
   if (!course) {
     return (
-      <View style={styles.container}>
-        <Text>Waiting...</Text>
-      </View>
+      <ActivityIndicator
+        size="large"
+        style={{ flex: 1, justifyContent: "center" }}
+      />
     );
   }
   const checkContainCart = (): boolean => {

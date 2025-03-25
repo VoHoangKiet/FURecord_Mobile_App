@@ -3,7 +3,7 @@ import { getAllCourses } from "@/apis/courses.api";
 
 export const useAllCourses = () => {
     return useQuery({
-        queryKey: ["coures"],
+        queryKey: ["courses"],
         queryFn: getAllCourses,
       });
 }
