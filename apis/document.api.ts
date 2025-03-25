@@ -19,6 +19,13 @@ export interface Document {
   reviews: ReviewDocument[];
 }
 
+export interface DocumentDTO {
+  title: string,
+  topic: string,
+  description: string,
+  file: any
+}
+
 interface ApiResponse {
   message?: string;
   error?: string;
@@ -46,7 +53,7 @@ export const getDocumentById = async (
 export const uploadDocument = async (body: FormData): Promise<string> => {
   try {
     const response = await api.post(
-      `${appUrls.backendUrl}/upload-review`,
+      `${appUrls.backendUrl}/upload-document`,
       body,
       {
         headers: {

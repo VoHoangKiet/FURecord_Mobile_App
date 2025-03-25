@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Platform } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Platform, ActivityIndicator } from "react-native";
 import { Link, useLocalSearchParams } from "expo-router";
 import { Rating } from "react-native-ratings";
 import { useDocumentById } from "@/hooks/useAllDocuments";
@@ -13,11 +13,12 @@ export default function DocumentDetail() {
   const { data: users } = useAllInfoUser();
 
   if (!document) {
-    return (
-      <View style={styles.container}>
-        <Text>Waiting...</Text>
-      </View>
-    );
+      return (
+        <ActivityIndicator
+          size="large"
+          style={{ flex: 1, justifyContent: "center" }}
+        />
+      );
   }
 
   const reviewCounts = getReviewCounts(document);

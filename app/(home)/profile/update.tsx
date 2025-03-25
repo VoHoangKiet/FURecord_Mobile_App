@@ -6,13 +6,14 @@ import {
   Input,
   List,
   Picker,
+  PickerColumnItem,
+  PickerValue,
   Toast,
 } from "@ant-design/react-native";
-import { useForm } from "@ant-design/react-native/lib/form/Form";
 import { useMutation } from "@tanstack/react-query";
 import { router } from "expo-router";
 import moment from "moment";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   TouchableOpacity,
@@ -21,21 +22,16 @@ import {
   ActivityIndicator,
 } from "react-native";
 
-type DataGender = {
-  label: string;
-  value: string;
-};
-
-const dataGender: DataGender[] = [
-  { label: "Male", value: "Male" },
-  { label: "Female", value: "Female" },
-  { label: "Other", value: "Other" },
+const dataGender: PickerColumnItem[] = [
+  { label: "Male", value: 0 },
+  { label: "Female", value: 1 },
+  { label: "Other", value: 2 },
 ];
 
 const UpdateProfileScreen = () => {
-  const [form] = useForm();
+  const [form] = Form.useForm();
   const { user, loading, invalidateProfile } = useAuth();
-
+  const [selectedGender, setSelectedGender] = useState<PickerValue[]>();
   const { mutate: updateProfile, isPending } = useMutation({
     mutationFn: (body: UpdateProfileDTO) => {
       return updateUserProfile(body);
@@ -43,17 +39,24 @@ const UpdateProfileScreen = () => {
   });
 
   const onSubmit = (values: UpdateProfileDTO) => {
-    console.log(values);
-    updateProfile(values, {
-      onSuccess() {
-        Toast.success("Update successfully");
-        invalidateProfile();
-        router.replace("/(home)");
+    updateProfile(
+      {
+        ...values,
+        gender: dataGender.find(
+          (gender) => gender.value === Number(selectedGender?.[0])
+        )?.label as string
       },
-      onError() {
-        Toast.fail("Update failed, try again");
-      },
-    });
+      {
+        onSuccess() {
+          Toast.success("Update successfully");
+          invalidateProfile();
+          router.replace("/(home)");
+        },
+        onError() {
+          Toast.fail("Update failed, try again");
+        },
+      }
+    );
   };
 
   if (!user || loading) {
@@ -64,6 +67,17 @@ const UpdateProfileScreen = () => {
       />
     );
   }
+  useEffect(() => {
+    if (user) {
+      setSelectedGender([
+        dataGender.find((gender) => gender.label === user.gender)?.value,
+      ] as PickerValue[]);
+    }
+  }, [user]);
+
+  const onGenderChange = (value: PickerValue[]) => {
+    setSelectedGender(value);
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -75,8 +89,8 @@ const UpdateProfileScreen = () => {
         initialValues={{
           fullName: user.fullName,
           email: user.email,
-          gender: user.gender,
           about: user.about,
+          gender: Number(selectedGender?.[0]),
           dob: moment(user.dob).toDate(),
         }}
       >
@@ -109,10 +123,16 @@ const UpdateProfileScreen = () => {
           name="gender"
           rules={[{ required: true, message: "Please select gender" }]}
         >
-          <Picker data={dataGender} cols={1}>
+          <Picker
+            data={dataGender}
+            cols={1}
+            onOk={(v: PickerValue[]) => onGenderChange(v)}
+          >
             <TouchableOpacity style={[styles.input, { padding: 10 }]}>
               <Text style={{ fontSize: 16 }}>
-                {user.gender || "Select Gender"}
+                {dataGender.find(
+                  (gender) => gender.value === Number(selectedGender?.[0])
+                )?.label || "Select Gender"}
               </Text>
             </TouchableOpacity>
           </Picker>
@@ -181,6 +201,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 8,
     padding: 5,
+    paddingLeft: 10,
     fontSize: 16,
     marginTop: 5,
   },

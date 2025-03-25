@@ -1,15 +1,22 @@
 import { CardComponent } from "@/components/document/Card";
 import { useAllDocuments } from "@/hooks/useAllDocuments";
 import { getReviewCounts } from "@/utils/getReviewCounts";
-import { SearchBar } from "@ant-design/react-native";
+import { Icon, SearchBar } from "@ant-design/react-native";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet } from "react-native";
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-export default function FlashCardScreen() {
+export default function DocumentScreen() {
   const router = useRouter();
   const { data: documents } = useAllDocuments();
   const [searchQuery, setSearchQuery] = useState("");
+
   if (!documents) {
     return (
       <ActivityIndicator
@@ -22,19 +29,42 @@ export default function FlashCardScreen() {
     doc.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleNavigate = (documentId: number) => {
+  const handleNavigateDocument = (documentId: number) => {
     router.push({
       pathname: "/(home)/document/[docId]",
       params: { docId: documentId },
     });
   };
+
+  const handleNavigateUploadDocument = () => {
+    router.push("/(home)/document/upload-doc");
+  };
+
   return (
     <ScrollView style={styles.container}>
-      <SearchBar
-        value={searchQuery}
-        placeholder="Search document..."
-        onChange={setSearchQuery}
-      />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginBottom: 5,
+        }}
+      >
+        <View style={{ flex: 1 }}>
+          <SearchBar
+            value={searchQuery}
+            placeholder="Search document..."
+            onChange={setSearchQuery}
+          />
+        </View>
+        <TouchableOpacity onPress={handleNavigateUploadDocument}>
+          <Icon
+            name="upload"
+            size={32}
+            color="black"
+            style={{ marginRight: 7 }}
+          />
+        </TouchableOpacity>
+      </View>
       <ScrollView>
         {filteredDocuments?.map((doc, index) => (
           <CardComponent
@@ -45,7 +75,7 @@ export default function FlashCardScreen() {
             state={doc.state}
             likes={getReviewCounts(doc).helpful}
             dislikes={getReviewCounts(doc).unhelpful}
-            onPress={() => handleNavigate(doc.id)}
+            onPress={() => handleNavigateDocument(doc.id)}
           />
         ))}
       </ScrollView>

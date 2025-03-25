@@ -13,6 +13,9 @@ export default function DocumentLayout() {
       <Stack.Screen
         name="[docId]"
       />
+      <Stack.Screen
+        name="upload-doc"
+      />
     </Stack>
   );
 }
