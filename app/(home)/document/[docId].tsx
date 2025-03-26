@@ -7,7 +7,7 @@ import { useAllInfoUser } from "@/hooks/useAllInfoUser";
 import Pdf from "react-native-pdf";
 import { Icon } from "@ant-design/react-native";
 
-export default function DocumentDetail() {
+const DocumentDetail = () => {
   const params = useLocalSearchParams<{ docId: string }>();
   const { data: document } = useDocumentById(Number.parseInt(params.docId));
   const { data: users } = useAllInfoUser();
@@ -85,6 +85,8 @@ export default function DocumentDetail() {
     )
   );
 }
+
+export default DocumentDetail;
 
 const styles = StyleSheet.create({
   container: {

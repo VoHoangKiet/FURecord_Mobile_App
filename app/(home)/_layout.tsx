@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import CartComponent from "@/components/order/Cart";
 import { Tabs } from "expo-router";
+import { Icon } from "@ant-design/react-native";
 
 export default function HomeLayout() {
   return (
@@ -30,6 +31,15 @@ export default function HomeLayout() {
         }}
       />
       <Tabs.Screen
+        name="chat-ai"
+        options={{
+          title: "ChatAI",
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="aliwangwang" size={size} color={color}/>
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="learns"
         options={{
           title: "Learning",
@@ -48,6 +58,7 @@ export default function HomeLayout() {
           ),
         }}
       />
+
     </Tabs>
   );
 }
