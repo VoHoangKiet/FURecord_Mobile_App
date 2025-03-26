@@ -1,140 +1,102 @@
-import { Empty } from "@/components/common";
-import { Button, Modal, Toast } from "@ant-design/react-native";
-import { useRouter } from "expo-router";
-import { FlatList, StyleSheet, Text, View } from "react-native";
-import { observer } from "mobx-react-lite";
-import { useStore } from "@/modules/store";
-import { CardItem } from "@/components/order/CardItem";
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { paymentCourse } from "@/apis/payment.api";
+import React, { useState, useCallback, useEffect } from "react";
+import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
+import { View, StyleSheet, SafeAreaView } from "react-native";
+import { getAssistantAnswer } from "@/apis/deepseek.api";
 
-const OrderScreen = observer(() => {
-  const router = useRouter();
-  const { cartStore } = useStore();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedCourseId, setSelectedCourseId] = useState<string>("");
+const ChatAIScreen = () => {
+  const [messages, setMessages] = useState<
+    Array<{
+      _id: number;
+      text: string;
+      createdAt: Date;
+      user: {
+        _id: number;
+        name: string;
+        avatar: string;
+      };
+    }>
+  >([]);
 
-  const buyMutation = useMutation({
-    mutationFn: (body: FormData) => {
-      return paymentCourse(body);
-    },
-  });
+  useEffect(() => {
+    setMessages([
+      {
+      _id: 1,
+      text: "Xin chào! Mình là bot Gifted Chat.",
+      createdAt: new Date(),
+      user: {
+        _id: 2,
+        name: "Bot",
+        avatar: "https://img.freepik.com/premium-photo/3d-ai-assistant-icon-artificial-intelligence-virtual-helper-logo-illustration_762678-40646.jpg",
+      },
+      },
+      {
+      _id: 2,
+      text: "Xin chào! Mình là bot Gifted Chat.",
+      createdAt: new Date(),
+      user: {
+        _id: 2,
+        name: "Bot",
+        avatar: "https://img.freepik.com/premium-photo/3d-ai-assistant-icon-artificial-intelligence-virtual-helper-logo-illustration_762678-40646.jpg",
+      },
+      },
+      {
+      _id: 3,
+      text: "Xin chào! Mình là bot Gifted Chat.",
+      createdAt: new Date(),
+      user: {
+        _id: 2,
+        name: "Bot",
+        avatar: "https://img.freepik.com/premium-photo/3d-ai-assistant-icon-artificial-intelligence-virtual-helper-logo-illustration_762678-40646.jpg",
+      },
+      },
+    ]);
+    getAssistantAnswer();
+  }, []);
 
-  if (!cartStore.cart.length) {
-    return (
-      <View>
-        <Empty
-          viewStyle={{ marginVertical: 300 }}
-          title="Add course"
-          content="Your cart is empty"
-        />
-        <View style={styles.footer}>
-          <Button
-            style={styles.btnCheckout}
-            onPress={() => router.navigate("/(home)/learns")}
-          >
-            <Text style={styles.btnCheckoutText}>Browser Courses</Text>
-          </Button>
-        </View>
-      </View>
+  const onSend = useCallback((messages = []) => {
+    setMessages((previousMessages) =>
+      GiftedChat.append(previousMessages, messages)
     );
-  }
-
-  const onConfirmBuyCourse = (id: string) => {
-    setSelectedCourseId(id);
-    setIsModalVisible(true);
-  };
-
-  const handleOk = () => {
-    console.log("Course confirmed with ID:", selectedCourseId);
-    let formData = new FormData();
-    formData.append("courseId", selectedCourseId);
-    setIsModalVisible(false);
-    buyMutation.mutate(formData, {
-      onSuccess(data) {
-        console.log(data);
-        router.navigate({
-          pathname: "/stripe-payment",
-          params: { stripeUrl: data },
-        });
-      },
-      onError(data: any) {
-        Toast.fail(data.response.data.message);
-      },
-    });
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.itemTotal}>{cartStore.cart.length} item</Text>
-      <FlatList
-        data={cartStore.cart}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => {
-          return (
-            <CardItem
-              course={item}
-              onConfirm={() => onConfirmBuyCourse(item.id.toString())}
-            />
-          );
+    <SafeAreaView style={styles.container}>
+      <GiftedChat
+        messages={messages}
+        onSend={(messages) => onSend(messages)}
+        user={{
+          _id: 1,
+          name: "Người dùng",
         }}
+        renderBubble={(props) => (
+          <Bubble
+            {...props}
+            wrapperStyle={{
+              right: { backgroundColor: "#2e64e5" },
+              left: { backgroundColor: "#e5e5e5" },
+            }}
+            textStyle={{
+              right: { color: "#fff" },
+              left: { color: "#000" },
+            }}
+            containerStyle={{ left: { marginBottom: 10} }}
+          />
+        )}
+        renderInputToolbar={(props) => (
+          <InputToolbar
+            {...props}
+            containerStyle={{
+              borderColor: "#ddd",
+            }}
+          />
+        )}
       />
-      <Modal
-        visible={isModalVisible}
-        transparent
-        title="Confirm Purchase"
-        footer={[
-          { text: "Cancel", onPress: handleCancel },
-          { text: "Confirm", onPress: handleOk },
-        ]}
-      >
-        <Text style={{ textAlign: "center" }}>
-          Are you sure to buy this course?
-        </Text>
-      </Modal>
-    </View>
+    </SafeAreaView>
   );
-});
-
-export default OrderScreen;
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: "#fff",
-  },
-  courseCard: {
-    marginBottom: 16,
-  },
-  courseImage: {
-    width: "100%",
-    height: 200,
-  },
-  btnCheckout: {
-    backgroundColor: "#a714dd",
-    width: 380,
-  },
-  btnCheckoutText: {
-    color: "#fff",
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  footer: {
-    position: "absolute",
-    top: 750,
-    left: 15,
-    borderTopColor: "#e7e7e7",
-    alignItems: "center",
-  },
-  itemTotal: {
-    fontSize: 25,
-    fontWeight: "500",
-    marginBottom: 10,
-  },
+  container: { flex: 1, backgroundColor: "#fff" },
 });
+
+export default ChatAIScreen;
