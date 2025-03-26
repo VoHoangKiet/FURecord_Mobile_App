@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const DEEP_SEEK_API_KEY = "";
+const DEEP_SEEK_API_KEY = "sk-";
 
 export const getAssistantAnswer = async () => {
   try {
@@ -9,6 +9,7 @@ export const getAssistantAnswer = async () => {
       {
         model: "deepseek-chat",
         messages: [{ role: "system", content: "You are a helpful assistant." }],
+        "stream": false
       },
       {
         headers: {
@@ -17,7 +18,7 @@ export const getAssistantAnswer = async () => {
         },
       }
     );
-    console.log("Response:", response.data);
+    console.log("Response:", response.data.choices[0].message.content);
   } catch (error: any) {
     console.error(
       "Error fetching data:",
