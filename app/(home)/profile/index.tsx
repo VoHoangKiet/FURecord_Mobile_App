@@ -26,6 +26,10 @@ export default function ProfileScreen() {
     router.push("/(home)/profile/update-image");
   };
 
+  const handleResumeProfile = () => {
+    router.push("/(home)/profile/resume");
+  };
+
   const handleLogout = () => {
     logout();
     router.replace("/(auth)");
@@ -67,19 +71,26 @@ export default function ProfileScreen() {
           }}
         >
           {role === "USER" ? (
-            <View>
-              <Text style={[styles.role, { marginHorizontal: "auto" }]}>
+            <View style={{ flexDirection: "row", gap: 20 }}>
+              <Text
+                style={[styles.role, { marginHorizontal: "auto", width: 50 }]}
+              >
                 {user.role}
               </Text>
-              <TouchableOpacity>
-                <Text style={styles.expert}>Register to become an Expert</Text>
-              </TouchableOpacity>
+              <Text
+                style={[styles.role, { marginHorizontal: "auto", minWidth: 50 }]}
+              >
+                Legit: {user.legitMark}
+              </Text>
             </View>
           ) : (
             <Text style={[styles.role, { width: 80 }]}>{role}</Text>
           )}
         </View>
-        <TouchableOpacity style={styles.menuItem} onPress={handleUpdateProfileImage}>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={handleUpdateProfileImage}
+        >
           <Text style={styles.menuText}>Change Profile Image</Text>
           <Ionicons name="chevron-forward-outline" size={18} />
         </TouchableOpacity>
@@ -87,7 +98,7 @@ export default function ProfileScreen() {
           <Text style={styles.menuText}>Update Your Info</Text>
           <Ionicons name="chevron-forward-outline" size={18} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity style={styles.menuItem} onPress={handleResumeProfile}>
           <Text style={styles.menuText}>My Resume</Text>
           <Ionicons name="chevron-forward-outline" size={18} />
         </TouchableOpacity>
@@ -148,8 +159,7 @@ const styles = StyleSheet.create({
     color: "#a6c305",
     backgroundColor: "lightyellow",
     borderWidth: 0.5,
-    width: 50,
-    padding: 2,
+    padding: 5,
     borderRadius: 5,
   },
   expert: {

@@ -65,9 +65,9 @@ export const uploadDocument = async (body: FormData): Promise<string> => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const serverError = error.response?.data as ApiResponse;
-      return `'Lỗi từ server:', ${serverError}`;
+      return `'Error from server:', ${serverError}`;
     } else {
-      return "Đã xảy ra lỗi, vui lòng thử lại.";
+      return "An error had been occur, please try again.";
     }
   }
 };

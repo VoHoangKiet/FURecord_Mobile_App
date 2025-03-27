@@ -19,6 +19,9 @@ export default function ProfileLayout() {
       <Stack.Screen
         name="update-image"
       />
+      <Stack.Screen
+        name="resume"
+      />
     </Stack>
   );
 }

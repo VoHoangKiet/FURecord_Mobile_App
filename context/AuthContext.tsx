@@ -85,6 +85,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setUser(null);
       await AsyncStorage.removeItem("token");
       await AsyncStorage.removeItem("role");
+      await AsyncStorage.removeItem("resumeUri");
+      await AsyncStorage.removeItem("chat_history");
     } catch (error) {
       console.error("Logout error:", error);
     }

@@ -1,6 +1,5 @@
 import { signUp, SignUpDTO } from "@/apis/auth.api";
 import { Button, Toast } from "@ant-design/react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation } from "@tanstack/react-query";
 import { router } from "expo-router";
 import React, { useState } from "react";

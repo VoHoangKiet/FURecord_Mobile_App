@@ -71,7 +71,7 @@ const DocumentDetail = () => {
         {(document.fileUrl && Platform.OS !== "web") ? (
           <Pdf
             trustAllCerts={false}
-            source={{ uri: document.fileUrl, cache: true }}
+            source={{ uri: document.fileUrl }}
             style={styles.pdf}
             onLoadComplete={(numberOfPages: number) =>
               console.log(`PDF loaded with ${numberOfPages} pages`)
