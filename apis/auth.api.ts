@@ -27,6 +27,12 @@ export interface UpdateProfileDTO {
   gender: string;
   avatarUrl?: string;
 }
+
+export interface SignUpDTO {
+  email: string;
+  fullName: string;
+  password: string;
+}
 export const getProfileInfo = async (): Promise<User> => {
   const response = await api.get(`${appUrls.backendUrl}/profile`);
   return response.data;
@@ -58,3 +64,8 @@ export const updateImageProfile = async (body: FormData): Promise<string> => {
   });
   return response.data;
 };
+
+export const signUp = async (body: SignUpDTO) => {
+  const response = await api.post(`${appUrls.backendUrl}/signup`, body);
+  return response.data;
+}

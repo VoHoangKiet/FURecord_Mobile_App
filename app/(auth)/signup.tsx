@@ -1,21 +1,45 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { signUp, SignUpDTO } from "@/apis/auth.api";
+import { Button, Toast } from "@ant-design/react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useMutation } from "@tanstack/react-query";
+import { router } from "expo-router";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 
 export default function LoginScreen() {
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
+  const { mutate: signUpMutation, isPending } = useMutation({
+    mutationFn: (body: SignUpDTO) => {
+      return signUp(body);
+    },
+  });
   const handleSignUp = async () => {
     if (fullName && email && password && password === confirmPassword) {
-      alert('Sign Up Successful');
-      await AsyncStorage.setItem('email', email);
-      await AsyncStorage.setItem('password', password);
-      await AsyncStorage.setItem('fullName', fullName);
+      const signUpData: SignUpDTO = { email, fullName, password };
+      signUpMutation(signUpData, {
+        onSuccess() {
+          Toast.success("Register Successfully");
+          router.navigate({
+            pathname: "/(auth)",
+          });
+        },
+        onError(data: any) {
+          Toast.fail(data.response.data.message);
+        },
+      });
     } else {
-      alert('Please fill all fields correctly');
+      alert("Please fill all fields correctly");
     }
   };
 
@@ -36,6 +60,7 @@ export default function LoginScreen() {
           style={styles.input}
           placeholder="Email"
           keyboardType="email-address"
+          autoCapitalize="none"
           value={email}
           onChangeText={setEmail}
         />
@@ -53,43 +78,49 @@ export default function LoginScreen() {
           value={confirmPassword}
           onChangeText={setConfirmPassword}
         />
-        <TouchableOpacity onPress={handleSignUp} style={styles.signUpButton}>
+        <Button
+          style={styles.signUpButton}
+          onPress={handleSignUp}
+          loading={isPending}
+        >
           <Text style={styles.buttonText}>Sign Up</Text>
-        </TouchableOpacity>
+        </Button>
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>By signing up, you agree to our Terms & Conditions</Text>
+        <Text style={styles.footerText}>
+          By signing up, you agree to our Terms & Conditions
+        </Text>
       </View>
     </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: "#F5F5F5",
     paddingHorizontal: 20,
     paddingTop: 40,
   },
   header: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   formContainer: {
     marginTop: 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     padding: 20,
     borderRadius: 10,
     elevation: 5,
   },
   input: {
     height: 50,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 15,
@@ -97,22 +128,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   signUpButton: {
-    backgroundColor: '#007BFF',
-    paddingVertical: 15,
+    backgroundColor: "#007BFF",
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   footer: {
     marginTop: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   footerText: {
     fontSize: 12,
-    color: '#888',
+    color: "#888",
   },
 });
