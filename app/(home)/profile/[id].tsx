@@ -64,23 +64,30 @@ export default function UserDetail() {
         {user.gender && (
           <Text style={styles.infoText}>Gender: {user.gender}</Text>
         )}
-        <View style={styles.content}>
-          <Text style={styles.title}>Documents</Text>
-          <ScrollView horizontal>
-            {ownerDocuments?.map((doc, index) => (
-              <CardComponent
-                id={doc.id}
-                key={index}
-                title={doc.title}
-                author={doc.description}
-                state={doc.state}
-                likes={getReviewCounts(doc).helpful}
-                dislikes={getReviewCounts(doc).unhelpful}
-                onPress={() => handleNavigateDocument(doc.id)}
-              />
-            ))}
-          </ScrollView>
-        </View>
+        {ownerDocuments.length > 0 ? (
+          <View style={styles.content}>
+            <Text style={styles.title}>Documents</Text>
+            <ScrollView horizontal>
+              {ownerDocuments?.map((doc, index) => (
+                <CardComponent
+                  id={doc.id}
+                  key={index}
+                  title={doc.title}
+                  author={doc.description}
+                  state={doc.state}
+                  likes={getReviewCounts(doc).helpful}
+                  dislikes={getReviewCounts(doc).unhelpful}
+                  onPress={() => handleNavigateDocument(doc.id)}
+                />
+              ))}
+            </ScrollView>
+          </View>
+        ) : (
+          <Empty
+            title="Empty Document"
+            content="Owner doesn't push any documents"
+          />
+        )}
         <View>
           {ownerCourses.length > 0 ? (
             <Fragment>
@@ -91,7 +98,7 @@ export default function UserDetail() {
                     key={course.id}
                     onPress={() => handleNavigateCourse(course.id)}
                   >
-                    <Banner course={course}/>
+                    <Banner course={course} />
                   </TouchableOpacity>
                 ))}
               </ScrollView>

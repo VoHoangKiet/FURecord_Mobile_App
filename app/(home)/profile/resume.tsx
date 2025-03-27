@@ -5,14 +5,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as DocumentPicker from "expo-document-picker";
 import { Button, Toast } from "@ant-design/react-native";
 import { useMutation } from "@tanstack/react-query";
-import { requestExpert } from "@/apis/expert.api";
+import {
+  ExpertRequest,
+  myExpertRequest,
+  requestExpert,
+} from "@/apis/expert.api";
 import { router } from "expo-router";
-import { useMyExpertRequest } from "@/hooks/useMyExpertRequest";
 
 const ResumeScreen = () => {
   const [pdfUri, setPdfUri] = useState("");
-  const { data: myRequest, isLoading: loadingRequest } = useMyExpertRequest();
-
+  const [loadingRq, setLoadingRq] = useState(false);
+  const [myRequest, setMyRequest] = useState<ExpertRequest | null>();
   const { mutate: requestExpertMutate, isPending } = useMutation({
     mutationFn: (formData: FormData) => requestExpert(formData),
     onSuccess: () => {
@@ -31,11 +34,24 @@ const ResumeScreen = () => {
       setPdfUri(storedUri);
     }
   };
-
+  const loadRequest = async () => {
+    setLoadingRq(true);
+    try {
+      const data = await myExpertRequest();
+      if (data) {
+        setMyRequest(data);
+      }
+    } catch (error) {
+      Toast.fail("Error had occure !");
+    } finally {
+      setLoadingRq(false);
+    }
+  };
   useEffect(() => {
     if (!pdfUri) {
       loadPdf();
     }
+    loadRequest();
   }, []);
 
   const confirmUpload = async (tempPdfUri: string) => {
@@ -86,7 +102,7 @@ const ResumeScreen = () => {
       ) : (
         <Button onPress={handleUpload}>Upload Resume</Button>
       )}
-      {loadingRequest ? (
+      {loadingRq ? (
         <ActivityIndicator
           size="large"
           style={{ flex: 1, justifyContent: "center" }}
@@ -98,10 +114,10 @@ const ResumeScreen = () => {
       ) : myRequest.state === "PENDING" ? (
         <Button disabled loading>
           Pending to request expert
-        </Button>) : (
-        <Button>
-          You already an expert !
-        </Button>) }
+        </Button>
+      ) : (
+        <Button>You already an expert !</Button>
+      )}
     </View>
   );
 };

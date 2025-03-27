@@ -36,7 +36,7 @@ export const requestExpert = async (body: FormData): Promise<string> => {
   }
 };
 
-export const myExpertRequest = async (): Promise<ExpertRequest> => {
+export const myExpertRequest = async (): Promise<ExpertRequest | null> => {
   try {
     const response = await api.get(
       `${appUrls.backendUrl}/expert-requests/my-request`
