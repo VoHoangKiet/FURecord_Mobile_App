@@ -48,7 +48,7 @@ export const Banner: React.FC<BannerProps> = ({ course, viewStyle }) => {
               <Text style={{ fontSize: 12 }}>
                 {userExpert ? userExpert.fullName : "Expert"}
               </Text>
-              {course.reviews.length > 0 && (
+              {course.reviews?.length > 0 && (
                 <View style={{ flexDirection: "row", gap: 10 }}>
                   <Rating
                     style={{ width: 70 }}

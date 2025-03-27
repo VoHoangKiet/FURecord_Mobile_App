@@ -42,7 +42,7 @@ const ResumeScreen = () => {
         setMyRequest(data);
       }
     } catch (error) {
-      Toast.fail("Error had occure !");
+      Toast.fail("Error had occured !");
     } finally {
       setLoadingRq(false);
     }

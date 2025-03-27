@@ -25,6 +25,12 @@ export default function ProfileLayout() {
       <Stack.Screen
         name="my-purchase"
       />
+      <Stack.Screen
+        name="my-courses"
+      />
+      <Stack.Screen
+        name="add-course"
+      />
     </Stack>
   );
 }

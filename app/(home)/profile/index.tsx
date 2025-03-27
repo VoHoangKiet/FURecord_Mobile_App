@@ -55,6 +55,10 @@ export default function ProfileScreen() {
     router.push({ pathname: "/(home)/profile/my-purchase" });
   };
 
+  const handleViewMyCourses = () => {
+    router.push({ pathname: "/(home)/profile/my-courses" });
+  };
+
   const handleLogout = () => {
     logout();
     router.replace("/(auth)");
@@ -66,7 +70,7 @@ export default function ProfileScreen() {
       { text: "Logout", onPress: () => handleLogout() },
     ]);
   };
-
+  
   return (
     <ScrollView style={styles.container}>
       <View style={styles.profileContainer}>
@@ -125,6 +129,15 @@ export default function ProfileScreen() {
           <Text style={styles.menuText}>My Resume</Text>
           <Ionicons name="chevron-forward-outline" size={18} />
         </TouchableOpacity>
+        {role === "EXPERT" && (
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={handleViewMyCourses}
+          >
+            <Text style={styles.menuText}>My Courses</Text>
+            <Ionicons name="chevron-forward-outline" size={18} />
+          </TouchableOpacity>
+        )}
         <TouchableOpacity style={styles.menuItem}>
           <Text style={styles.menuText}>Note For Recruiters</Text>
           <Ionicons name="chevron-forward-outline" size={18} />
