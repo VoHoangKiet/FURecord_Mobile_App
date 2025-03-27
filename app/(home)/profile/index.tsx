@@ -18,30 +18,6 @@ export default function ProfileScreen() {
   const { user, logout, loading } = useAuth();
   const [role, setRole] = useState<string>("");
 
-  const handleUpdateProfile = () => {
-    router.push("/(home)/profile/update");
-  };
-
-  const handleUpdateProfileImage = () => {
-    router.push("/(home)/profile/update-image");
-  };
-
-  const handleResumeProfile = () => {
-    router.push("/(home)/profile/resume");
-  };
-
-  const handleLogout = () => {
-    logout();
-    router.replace("/(auth)");
-  };
-
-  const onButtonLogout = () => {
-    Modal.alert("Logout", "Are you sure you want to log out ?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Logout", onPress: () => handleLogout() },
-    ]);
-  };
-
   useEffect(() => {
     getRoleUser();
   }, []);
@@ -58,6 +34,39 @@ export default function ProfileScreen() {
       />
     );
   }
+
+  const handleUpdateProfile = () => {
+    router.push("/(home)/profile/update");
+  };
+
+  const handleUpdateProfileImage = () => {
+    router.push("/(home)/profile/update-image");
+  };
+
+  const handleResumeProfile = () => {
+    router.push("/(home)/profile/resume");
+  };
+
+  const handlePreviewProfile = () => {
+    router.push({ pathname: "/(home)/profile/[id]", params: { id: user.id } });
+  };
+
+  const handleViewPurchase = () => {
+    router.push({ pathname: "/(home)/profile/my-purchase" });
+  };
+
+  const handleLogout = () => {
+    logout();
+    router.replace("/(auth)");
+  };
+
+  const onButtonLogout = () => {
+    Modal.alert("Logout", "Are you sure you want to log out ?", [
+      { text: "Cancel", style: "cancel" },
+      { text: "Logout", onPress: () => handleLogout() },
+    ]);
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.profileContainer}>
@@ -78,7 +87,10 @@ export default function ProfileScreen() {
                 {user.role}
               </Text>
               <Text
-                style={[styles.role, { marginHorizontal: "auto", minWidth: 50 }]}
+                style={[
+                  styles.role,
+                  { marginHorizontal: "auto", minWidth: 50 },
+                ]}
               >
                 Legit: {user.legitMark}
               </Text>
@@ -89,25 +101,28 @@ export default function ProfileScreen() {
         </View>
         <TouchableOpacity
           style={styles.menuItem}
+          onPress={handlePreviewProfile}
+        >
+          <Text style={styles.menuText}>View My Profile</Text>
+          <Ionicons name="chevron-forward-outline" size={18} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={handleViewPurchase}>
+          <Text style={styles.menuText}>My Purchase</Text>
+          <Ionicons name="chevron-forward-outline" size={18} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.menuItem}
           onPress={handleUpdateProfileImage}
         >
-          <Text style={styles.menuText}>Change Profile Image</Text>
+          <Text style={styles.menuText}>Update Avatar</Text>
           <Ionicons name="chevron-forward-outline" size={18} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={handleUpdateProfile}>
-          <Text style={styles.menuText}>Update Your Info</Text>
+          <Text style={styles.menuText}>Edit Personal Info</Text>
           <Ionicons name="chevron-forward-outline" size={18} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={handleResumeProfile}>
           <Text style={styles.menuText}>My Resume</Text>
-          <Ionicons name="chevron-forward-outline" size={18} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuText}>Change Available Times</Text>
-          <Ionicons name="chevron-forward-outline" size={18} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuText}>My Criteria</Text>
           <Ionicons name="chevron-forward-outline" size={18} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem}>
@@ -119,7 +134,7 @@ export default function ProfileScreen() {
           <Ionicons name="chevron-forward-outline" size={18} />
         </TouchableOpacity>
         <TouchableOpacity onPress={onButtonLogout}>
-          <Text style={styles.expert}>Logout</Text>
+          <Text style={styles.expert}>Sign Out</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

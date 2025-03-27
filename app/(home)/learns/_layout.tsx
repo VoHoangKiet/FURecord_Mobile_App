@@ -10,6 +10,9 @@ export default function LearningLayout() {
       <Stack.Screen
         name="index"
       />
+      <Stack.Screen
+        name="bought/[boughtId]"
+      />
     </Stack>
   );
 }

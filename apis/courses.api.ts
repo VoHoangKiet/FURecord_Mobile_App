@@ -34,3 +34,8 @@ export const getAllCourses = async (): Promise<Course[]> => {
   const response = await api.get(`${appUrls.backendUrl}/public/courses`);
   return response.data;
 };
+
+export const getAllCoursesBought = async (): Promise<Course[]> => {
+  const response = await api.get(`${appUrls.backendUrl}/course/bought`);
+  return response.data;
+};

@@ -22,6 +22,9 @@ export default function ProfileLayout() {
       <Stack.Screen
         name="resume"
       />
+      <Stack.Screen
+        name="my-purchase"
+      />
     </Stack>
   );
 }

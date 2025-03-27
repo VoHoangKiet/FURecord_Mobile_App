@@ -8,8 +8,9 @@ import { Rating } from "react-native-ratings";
 
 type ThumbnailProps = {
   course: Course;
+  isBought?: boolean;
 };
-export const Thumbnail: React.FC<ThumbnailProps> = ({ course }) => {
+export const Thumbnail: React.FC<ThumbnailProps> = ({ course, isBought }) => {
   const { data: users } = useAllInfoUser();
   const [userExpert, setUserExpert] = useState<User>();
   useEffect(() => {
@@ -18,7 +19,7 @@ export const Thumbnail: React.FC<ThumbnailProps> = ({ course }) => {
       setUserExpert(expert);
     }
   }, [users, course]);
-  
+
   return (
     <View style={styles.container}>
       <Image
@@ -43,24 +44,28 @@ export const Thumbnail: React.FC<ThumbnailProps> = ({ course }) => {
               alignItems: "center",
             }}
           >
-             <View>
-            <Text>{userExpert ? userExpert.fullName : "Expert"}</Text>
-            {course.reviews.length > 0 && (
-              <View style={{ flexDirection: "row", gap: 10 }}>
-                <Rating
-                  style={{ width: 70 }}
-                  startingValue={getTotalRating(course.reviews)}
-                  imageSize={15}
-                  readonly
-                />
-                <Text style={{ marginTop: -1.8 }}>
-                  ({getTotalRating(course.reviews)})
-                </Text>
-              </View>
-            )}
-          </View>
             <View>
-              <Text style={styles.money}>$ {course.price.toFixed(2)}</Text>
+              <Text>{userExpert ? userExpert.fullName : "Expert"}</Text>
+              {course.reviews.length > 0 && (
+                <View style={{ flexDirection: "row", gap: 10 }}>
+                  <Rating
+                    style={{ width: 70 }}
+                    startingValue={getTotalRating(course.reviews)}
+                    imageSize={15}
+                    readonly
+                  />
+                  <Text style={{ marginTop: -1.8 }}>
+                    ({getTotalRating(course.reviews)})
+                  </Text>
+                </View>
+              )}
+            </View>
+            <View>
+              {!isBought ? (
+                <Text style={styles.money}>$ {course.price.toFixed(2)}</Text>
+              ) : (
+                <Text style={styles.money}>{course.lessons.length} lessons</Text>
+              )}
             </View>
           </View>
         </View>
