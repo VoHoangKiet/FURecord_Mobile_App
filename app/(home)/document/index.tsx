@@ -25,7 +25,10 @@ export default function DocumentScreen() {
       />
     );
   }
-  const filteredDocuments = documents?.filter((doc) =>
+  const documentActive = documents?.filter((doc) =>
+    doc.state === "active"
+  );
+  const filteredDocuments = documentActive?.filter((doc) =>
     doc.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 

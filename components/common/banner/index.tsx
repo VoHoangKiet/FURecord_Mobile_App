@@ -3,13 +3,14 @@ import { Course } from "@/apis/courses.api";
 import { useAllInfoUser } from "@/hooks/useAllInfoUser";
 import { getTotalRating } from "@/utils/getTotalRating";
 import { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View, ViewStyle } from "react-native";
 import { Rating } from "react-native-ratings";
 
 type BannerProps = {
   course: Course;
+  viewStyle?: ViewStyle;
 };
-export const Banner: React.FC<BannerProps> = ({ course }) => {
+export const Banner: React.FC<BannerProps> = ({ course, viewStyle }) => {
   const { data: users } = useAllInfoUser();
   const [userExpert, setUserExpert] = useState<User>();
   useEffect(() => {
@@ -20,7 +21,7 @@ export const Banner: React.FC<BannerProps> = ({ course }) => {
   }, [users, course]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { ...viewStyle }]}>
       <Image
         source={{
           uri: course.bannerUrl,
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
   },
   textContent: {
     flex: 1,
-    justifyContent: "space-between", 
+    justifyContent: "space-between",
   },
   title: {
     fontWeight: "bold",
@@ -115,6 +116,6 @@ const styles = StyleSheet.create({
   },
   expertInfo: {
     flex: 1,
-    justifyContent: "flex-start", 
+    justifyContent: "flex-start",
   },
 });
