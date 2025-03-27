@@ -33,5 +33,6 @@ export const getAssistantAnswer = async (
       "Error fetching data:",
       error.response?.data || error.message
     );
+    throw new Error(error.response?.data || error.message);
   }
 };

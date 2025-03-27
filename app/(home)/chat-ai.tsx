@@ -97,7 +97,21 @@ const ChatAIScreen = () => {
         );
       }
     } catch (error) {
-      console.error("Error fetching AI response:", error);
+      // console.error("Error fetching AI response:", error);
+      const botMessage = {
+        _id: Math.random(),
+        text: `Sory :( I can't answer your question now, ${error}`,
+        createdAt: new Date(),
+        user: {
+          _id: 2,
+          name: "Bot",
+          avatar:
+            "https://img.freepik.com/premium-photo/3d-ai-assistant-icon-artificial-intelligence-virtual-helper-logo-illustration_762678-40646.jpg",
+        },
+      };
+      setMessages((previousMessages) =>
+        GiftedChat.append(previousMessages, [botMessage])
+      );
     }
   }, []);
 
