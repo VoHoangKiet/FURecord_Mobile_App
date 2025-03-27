@@ -1,7 +1,13 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
-import { View, StyleSheet, SafeAreaView } from "react-native";
+import {
+  View,
+  StyleSheet,
+  SafeAreaView,
+  ActivityIndicator,
+} from "react-native";
 import { getAssistantAnswer } from "@/apis/deepseek.api";
+import { useAllCourses } from "@/hooks/useAllCourses";
 
 const ChatAIScreen = () => {
   const [messages, setMessages] = useState<
@@ -16,54 +22,70 @@ const ChatAIScreen = () => {
       };
     }>
   >([]);
+  const { data: courses } = useAllCourses();
+
+  if (!courses) {
+    return (
+      <ActivityIndicator
+        size="large"
+        style={{ flex: 1, justifyContent: "center" }}
+      />
+    );
+  }
 
   useEffect(() => {
     setMessages([
       {
-      _id: 1,
-      text: "Xin chào! Mình là bot Gifted Chat.",
-      createdAt: new Date(),
-      user: {
-        _id: 2,
-        name: "Bot",
-        avatar: "https://img.freepik.com/premium-photo/3d-ai-assistant-icon-artificial-intelligence-virtual-helper-logo-illustration_762678-40646.jpg",
-      },
-      },
-      {
-      _id: 2,
-      text: "Xin chào! Mình là bot Gifted Chat.",
-      createdAt: new Date(),
-      user: {
-        _id: 2,
-        name: "Bot",
-        avatar: "https://img.freepik.com/premium-photo/3d-ai-assistant-icon-artificial-intelligence-virtual-helper-logo-illustration_762678-40646.jpg",
-      },
-      },
-      {
-      _id: 3,
-      text: "Xin chào! Mình là bot Gifted Chat.",
-      createdAt: new Date(),
-      user: {
-        _id: 2,
-        name: "Bot",
-        avatar: "https://img.freepik.com/premium-photo/3d-ai-assistant-icon-artificial-intelligence-virtual-helper-logo-illustration_762678-40646.jpg",
-      },
+        _id: 1,
+        text: "Xin chào! Mình là bot Gifted Chat.",
+        createdAt: new Date(),
+        user: {
+          _id: 2,
+          name: "Bot",
+          avatar:
+            "https://img.freepik.com/premium-photo/3d-ai-assistant-icon-artificial-intelligence-virtual-helper-logo-illustration_762678-40646.jpg",
+        },
       },
     ]);
-    getAssistantAnswer();
   }, []);
 
-  const onSend = useCallback((messages = []) => {
+  const onSend = useCallback(async (newMessages = []) => {
     setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, messages)
+      GiftedChat.append(previousMessages, newMessages)
     );
+
+    const userMessage: any = newMessages[0];
+    try {
+      const response = await getAssistantAnswer(
+        userMessage.text as string,
+        courses
+      );
+      if (response) {
+        const botMessage = {
+          _id: Math.random(),
+          text: response,
+          createdAt: new Date(),
+          user: {
+            _id: 2,
+            name: "Bot",
+            avatar:
+              "https://img.freepik.com/premium-photo/3d-ai-assistant-icon-artificial-intelligence-virtual-helper-logo-illustration_762678-40646.jpg",
+          },
+        };
+        setMessages((previousMessages) =>
+          GiftedChat.append(previousMessages, [botMessage])
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching AI response:", error);
+    }
   }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <GiftedChat
         messages={messages}
-        onSend={(messages) => onSend(messages)}
+        onSend={(messages: any) => onSend(messages)}
         user={{
           _id: 1,
           name: "Người dùng",
@@ -79,7 +101,7 @@ const ChatAIScreen = () => {
               right: { color: "#fff" },
               left: { color: "#000" },
             }}
-            containerStyle={{ left: { marginBottom: 10} }}
+            containerStyle={{ left: { marginBottom: 10 } }}
           />
         )}
         renderInputToolbar={(props) => (

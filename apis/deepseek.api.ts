@@ -1,15 +1,24 @@
 import axios from "axios";
+import { Course } from "./courses.api";
 
-const DEEP_SEEK_API_KEY = "sk-";
+const DEEP_SEEK_API_KEY = "sk-e9abcb0ce20a4c96826b2802421ab448";
 
-export const getAssistantAnswer = async () => {
+export const getAssistantAnswer = async (
+  content: string,
+  courses: Course[]
+) => {
   try {
+    const msg = `Bạn là một chatbot của app chúng tôi, trả lời các câu hỏi mà người dùng đưa ra, chỉ dùng text và icon không format text, data dữ liệu gồm ${courses} và đưa ra gợi ý course thích hợp trong data cho người dùng mong muốn khi tìm kiếm 1 khoá học phù hợp với nhu cầu của họ`;
+
     const response = await axios.post(
       "https://api.deepseek.com/chat/completions",
       {
         model: "deepseek-chat",
-        messages: [{ role: "system", content: "You are a helpful assistant." }],
-        "stream": false
+        messages: [
+          { role: "system", content: msg },
+          { role: "user", content },
+        ],
+        stream: false,
       },
       {
         headers: {
@@ -19,6 +28,7 @@ export const getAssistantAnswer = async () => {
       }
     );
     console.log("Response:", response.data.choices[0].message.content);
+    return response.data.choices[0].message.content;
   } catch (error: any) {
     console.error(
       "Error fetching data:",
