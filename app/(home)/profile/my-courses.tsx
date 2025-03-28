@@ -20,6 +20,13 @@ export default function MyCoursesScreen() {
       params: { boughtId: courseId },
     });
   };
+
+  const handleNavigateAddCourse = () => {
+    router.push({
+      pathname: "/(home)/profile/add-course"
+    });
+  };
+
   if (!courses) {
     return (
       <ActivityIndicator
@@ -46,6 +53,7 @@ export default function MyCoursesScreen() {
   return (
     <ScrollView style={styles.container}>
       <WingBlank size="sm">
+        <Button onPress={handleNavigateAddCourse}>Add Course</Button>
         <ScrollView>
           {courses.map((course) => (
             <TouchableOpacity

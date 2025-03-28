@@ -77,3 +77,25 @@ export const getAllMyExpertCourses = async (): Promise<CourseExpert[]> => {
     }
   }
 };
+
+export const uploadCourse = async (body: FormData): Promise<string> => {
+  try {
+    const response = await api.post(
+      `${appUrls.backendUrl}/expert/course`,
+      body,
+      {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const serverError = error.response?.data as ApiResponse;
+      return `'Error from server:', ${serverError}`;
+    } else {
+      return "An error had been occur, please try again.";
+    }
+  }
+};

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Course } from "./courses.api";
 
-const DEEP_SEEK_API_KEY = "xai-";
+const DEEP_SEEK_API_KEY = "xai-br6P3jAoWt0eJAyt85acgBZ3O9TdfIUDvXTgevjtO0edLjmmGbcNNMZa0JGcLQFkymCLKmD7Jw1Wxutu";
 
 export const getAssistantAnswer = async (
   content: string,
