@@ -138,14 +138,14 @@ export default function ProfileScreen() {
             <Ionicons name="chevron-forward-outline" size={18} />
           </TouchableOpacity>
         )}
-        <TouchableOpacity style={styles.menuItem}>
+        {/* <TouchableOpacity style={styles.menuItem}>
           <Text style={styles.menuText}>Note For Recruiters</Text>
           <Ionicons name="chevron-forward-outline" size={18} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem}>
           <Text style={styles.menuText}>Stop Service</Text>
           <Ionicons name="chevron-forward-outline" size={18} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity onPress={onButtonLogout}>
           <Text style={styles.expert}>Sign Out</Text>
         </TouchableOpacity>

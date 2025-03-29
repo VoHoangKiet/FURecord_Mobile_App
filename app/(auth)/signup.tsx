@@ -28,7 +28,7 @@ export default function LoginScreen() {
       const signUpData: SignUpDTO = { email, fullName, password };
       signUpMutation(signUpData, {
         onSuccess() {
-          Toast.success("Register Successfully");
+          Toast.success("Register Successfully, Please check your email to verify !");
           router.navigate({
             pathname: "/(auth)",
           });

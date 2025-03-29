@@ -1,14 +1,13 @@
 import axios from "axios";
 import { Course } from "./courses.api";
 
-const DEEP_SEEK_API_KEY = "xai-br6P3jAoWt0eJAyt85acgBZ3O9TdfIUDvXTgevjtO0edLjmmGbcNNMZa0JGcLQFkymCLKmD7Jw1Wxutu";
+const DEEP_SEEK_API_KEY = "xai-";
 
 export const getAssistantAnswer = async (
   content: string,
   courses: Course[]
 ) => {
   try {
-    // Định dạng danh sách khóa học rõ ràng hơn
     const courseList = courses
       .map(
         (course) =>

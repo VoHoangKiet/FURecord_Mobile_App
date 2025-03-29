@@ -5,16 +5,27 @@ import { FlatList, StyleSheet, Text, View } from "react-native";
 import { observer } from "mobx-react-lite";
 import { useStore } from "@/modules/store";
 import { CardItem } from "@/components/order/CardItem";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { paymentCourse } from "@/apis/payment.api";
+import { useAllCoursesBought } from "@/hooks/useAllCoursesBought";
 
 const OrderScreen = observer(() => {
   const router = useRouter();
   const { cartStore } = useStore();
+  const { data: courses } = useAllCoursesBought();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState<string>("");
+  useEffect(() => {
+    if (!courses || !cartStore.cart.length) return;
 
+    cartStore.cart.forEach((cartItem) => {
+      if (courses.some((course) => course.id === cartItem.id)) {
+        cartStore.removeFromCart(cartItem.id);
+      }
+    });
+  }, [courses, cartStore.cart]);
+  
   const buyMutation = useMutation({
     mutationFn: (body: FormData) => {
       return paymentCourse(body);

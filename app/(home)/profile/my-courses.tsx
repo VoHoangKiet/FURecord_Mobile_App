@@ -44,7 +44,7 @@ export default function MyCoursesScreen() {
             title="My course"
             content="My list courses is empty"
           />
-          <Button>Upload Course</Button>
+          <Button onPress={handleNavigateAddCourse}>Upload Course</Button>
         </WingBlank>
       </View>
     );
